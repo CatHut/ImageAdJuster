@@ -1,4 +1,4 @@
-
+ï»¿
 
 using Accessibility;
 using CatHut;
@@ -7,6 +7,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Drawing.Printing;
@@ -17,6 +18,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using static System.Net.Mime.MediaTypeNames;
+using static System.Windows.Forms.ListView;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Header;
 using Image = System.Drawing.Image;
@@ -37,7 +39,7 @@ namespace ImageAdjuster
             BOTTOM_ALIGN,
             LEFT_ALIGN,
             RIGHT_ALIGN,
-            NONE        //ˆ—‚È‚µ
+            NONE        //å‡¦ç†ãªã—
         }
 
         enum DIRECTION
@@ -46,6 +48,19 @@ namespace ImageAdjuster
             DOWN,
             LEFT,
             RIGHT
+        }
+
+        enum LISTVIEW_COLUMN_HEADER
+        {
+            FILE = 0,
+            STATE,
+            PATH
+        }
+        enum LISTVIEW_STATE
+        {
+            WAIT = 0,
+            WORKING,
+            COMPLETED,
         }
 
 
@@ -58,8 +73,15 @@ namespace ImageAdjuster
         private CheckBox[] m_ExecCheckBoxArr;
         private Label[] m_ExecOrderLabelArr;
         private AppSetting m_APS;
+        private Dictionary<LISTVIEW_STATE, string> m_StateDic = new Dictionary<LISTVIEW_STATE, string>()
+        {
+            { LISTVIEW_STATE.WAIT, "æœª" },
+            { LISTVIEW_STATE.WORKING, "å‡¦ç†ä¸­" },
+            { LISTVIEW_STATE.COMPLETED, "æ¸ˆ" }
+        };
 
         bool m_EventEnable = true;
+        bool m_Exec = false;
 
 
         public Form1()
@@ -78,14 +100,14 @@ namespace ImageAdjuster
 
         private void InitializeSetting()
         {
-            //Às‡˜‰Šú‰»
+            //å®Ÿè¡Œé †åºåˆæœŸåŒ–
             m_ExecOrder = new int[Enum.GetNames(typeof(EXEC_TYPE)).Length];
             for (int i = 0; i < m_ExecOrder.Length; i++)
             {
                 m_ExecOrder[i] = -1;
             }
 
-            //•Û‘¶‚³‚ê‚½’l‚ğ“Ç‚İæ‚è
+            //ä¿å­˜ã•ã‚ŒãŸå€¤ã‚’èª­ã¿å–ã‚Š
             SetExecOrder(m_APS.Settings.m_ExecOrder);
 
         }
@@ -131,15 +153,15 @@ namespace ImageAdjuster
 
         private void Form1_DragEnter(object sender, DragEventArgs e)
         {
-            // ƒhƒƒbƒv‚³‚ê‚½ƒf[ƒ^‚ª‰æ‘œ‚©‚Ç‚¤‚©”»’è
+            // ãƒ‰ãƒ­ãƒƒãƒ—ã•ã‚ŒãŸãƒ‡ãƒ¼ã‚¿ãŒç”»åƒã‹ã©ã†ã‹åˆ¤å®š
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
-                // ƒhƒƒbƒv‚ğó‚¯“ü‚ê‚é
+                // ãƒ‰ãƒ­ãƒƒãƒ—ã‚’å—ã‘å…¥ã‚Œã‚‹
                 e.Effect = DragDropEffects.Copy;
             }
             else
             {
-                // ƒhƒƒbƒv‚ğó‚¯“ü‚ê‚È‚¢
+                // ãƒ‰ãƒ­ãƒƒãƒ—ã‚’å—ã‘å…¥ã‚Œãªã„
                 e.Effect = DragDropEffects.None;
             }
 
@@ -148,7 +170,7 @@ namespace ImageAdjuster
         private void Form1_DragDrop(object sender, DragEventArgs e)
         {
 
-            //İ’èó‹µæ“¾
+            //è¨­å®šçŠ¶æ³å–å¾—
 
 
 
@@ -158,14 +180,14 @@ namespace ImageAdjuster
 
 
 
-            //// ƒhƒƒbƒv‚³‚ê‚½ƒf[ƒ^‚ğæ“¾
+            //// ãƒ‰ãƒ­ãƒƒãƒ—ã•ã‚ŒãŸãƒ‡ãƒ¼ã‚¿ã‚’å–å¾—
             //string[] files = (string[])e.Data.GetData(DataFormats.FileDrop, false);
 
-            //// ƒhƒƒbƒv‚³‚ê‚½‰æ‘œ‚ğƒŠƒXƒg‚É’Ç‰Á
+            //// ãƒ‰ãƒ­ãƒƒãƒ—ã•ã‚ŒãŸç”»åƒã‚’ãƒªã‚¹ãƒˆã«è¿½åŠ 
             //foreach (string file in files)
             //{
 
-            //    // ˆÚ“®‚µ‚½‰æ‘œ‚ğ•Û‘¶‚·‚é
+            //    // ç§»å‹•ã—ãŸç”»åƒã‚’ä¿å­˜ã™ã‚‹
             //    bmp.Save(file, ImageFormat.Png);
 
             //}
@@ -173,10 +195,10 @@ namespace ImageAdjuster
 
         private static Bitmap AlignBottom(Image img, int pix)
         {
-            // ‰æ‘œ‚ğ“Ç‚İ‚Ş
+            // ç”»åƒã‚’èª­ã¿è¾¼ã‚€
             Bitmap bmp = new Bitmap(img);
 
-            // ‰æ‘œ’†‚ÌƒCƒ‰ƒXƒg‚ÌˆÊ’u‚ğŒŸo‚·‚é
+            // ç”»åƒä¸­ã®ã‚¤ãƒ©ã‚¹ãƒˆã®ä½ç½®ã‚’æ¤œå‡ºã™ã‚‹
             int x = 0;
             int y = 0;
             bool found = false;
@@ -187,7 +209,7 @@ namespace ImageAdjuster
                     Color pixel = bmp.GetPixel(j, i);
                     if (pixel.A > 0)
                     {
-                        // ƒCƒ‰ƒXƒg‚ªŒ©‚Â‚©‚Á‚½
+                        // ã‚¤ãƒ©ã‚¹ãƒˆãŒè¦‹ã¤ã‹ã£ãŸ
                         x = j;
                         y = i;
                         found = true;
@@ -201,10 +223,10 @@ namespace ImageAdjuster
                 }
             }
 
-            // ‰æ‘œ‚ğˆÚ“®‚·‚é
+            // ç”»åƒã‚’ç§»å‹•ã™ã‚‹
             using (Graphics graphics = Graphics.FromImage(bmp))
             {
-                // ˆê”Ô‰º‚ÌˆÊ’u‚ª‰æ‘œ‚Ì‰º‚©‚ç10ƒsƒNƒZƒ‹‚É‚È‚é‚æ‚¤‚ÉˆÚ“®‚·‚é
+                // ä¸€ç•ªä¸‹ã®ä½ç½®ãŒç”»åƒã®ä¸‹ã‹ã‚‰10ãƒ”ã‚¯ã‚»ãƒ«ã«ãªã‚‹ã‚ˆã†ã«ç§»å‹•ã™ã‚‹
                 int newX = x;
                 int newY = y + pix;
                 graphics.DrawImage(bmp, newX, newY);
@@ -226,7 +248,7 @@ namespace ImageAdjuster
             if (e.KeyCode == Keys.Delete)
             {
                 listView_FileList.BeginUpdate();
-                // ‘I‘ğ‚³‚ê‚Ä‚¢‚éƒAƒCƒeƒ€‚ğƒŠƒXƒg‚©‚çíœ‚·‚é
+                // é¸æŠã•ã‚Œã¦ã„ã‚‹ã‚¢ã‚¤ãƒ†ãƒ ã‚’ãƒªã‚¹ãƒˆã‹ã‚‰å‰Šé™¤ã™ã‚‹
                 if (listView_FileList.SelectedItems.Count > 0)
                 {
                     foreach (ListViewItem item in listView_FileList.SelectedItems)
@@ -238,7 +260,7 @@ namespace ImageAdjuster
 
                 if (listView_FileList.Items.Count == 0)
                 {
-                    var item = new string[] { "‚±‚±‚Éƒtƒ@ƒCƒ‹‚ğƒhƒ‰ƒbƒO•ƒhƒƒbƒv", "" };
+                    var item = new string[] { "ã“ã“ã«ãƒ•ã‚¡ã‚¤ãƒ«ã‚’ãƒ‰ãƒ©ãƒƒã‚°ï¼†ãƒ‰ãƒ­ãƒƒãƒ—", "" };
                     listView_FileList.Items.Add(new ListViewItem(item));
                 }
                 listView_FileList.EndUpdate();
@@ -248,7 +270,7 @@ namespace ImageAdjuster
 
         private void listView_FileList_DragDrop(object sender, DragEventArgs e)
         {
-            // ƒhƒƒbƒv‚³‚ê‚½ƒf[ƒ^‚ğæ“¾
+            // ãƒ‰ãƒ­ãƒƒãƒ—ã•ã‚ŒãŸãƒ‡ãƒ¼ã‚¿ã‚’å–å¾—
             string[] files = (string[])e.Data.GetData(DataFormats.FileDrop, false);
 
             listView_FileList.BeginUpdate();
@@ -256,10 +278,10 @@ namespace ImageAdjuster
                 var hashset = new HashSet<string>();
                 foreach (ListViewItem item in listView_FileList.Items)
                 {
-                    if (item.SubItems.Count == 2)
+                    if (item.SubItems.Count > (int)LISTVIEW_COLUMN_HEADER.PATH)
                     {
-                        if (File.Exists(item.SubItems[1].Text)){
-                            hashset.Add(item.SubItems[1].Text);
+                        if (File.Exists(item.SubItems[(int)LISTVIEW_COLUMN_HEADER.PATH].Text)){
+                            hashset.Add(item.SubItems[(int)LISTVIEW_COLUMN_HEADER.PATH].Text);
                         }
                     }
                 }
@@ -280,8 +302,7 @@ namespace ImageAdjuster
                 var itemList = new List<ListViewItem>();
                 foreach (var file in hashset)
                 {
-
-                    var item = new string[] { Path.GetFileName(file), file };
+                    var item = new string[] { Path.GetFileName(file), m_StateDic[LISTVIEW_STATE.WAIT] , file };
                     itemList.Add(new ListViewItem(item));
                 }
 
@@ -290,7 +311,7 @@ namespace ImageAdjuster
 
                 if (listView_FileList.Items.Count == 0)
                 {
-                    var item = new string[] { "‚±‚±‚Éƒtƒ@ƒCƒ‹‚ğƒhƒ‰ƒbƒO•ƒhƒƒbƒv", "" };
+                    var item = new string[] { "ã“ã“ã«ãƒ•ã‚¡ã‚¤ãƒ«ã‚’ãƒ‰ãƒ©ãƒƒã‚°ï¼†ãƒ‰ãƒ­ãƒƒãƒ—", "" };
                     listView_FileList.Items.Add(new ListViewItem(item));
                 }
             }
@@ -305,15 +326,15 @@ namespace ImageAdjuster
 
         private void listView_FileList_DragEnter(object sender, DragEventArgs e)
         {
-            // ƒhƒƒbƒv‚³‚ê‚½ƒf[ƒ^‚ª‰æ‘œ‚©‚Ç‚¤‚©”»’è
+            // ãƒ‰ãƒ­ãƒƒãƒ—ã•ã‚ŒãŸãƒ‡ãƒ¼ã‚¿ãŒç”»åƒã‹ã©ã†ã‹åˆ¤å®š
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
-                // ƒhƒƒbƒv‚ğó‚¯“ü‚ê‚é
+                // ãƒ‰ãƒ­ãƒƒãƒ—ã‚’å—ã‘å…¥ã‚Œã‚‹
                 e.Effect = DragDropEffects.Copy;
             }
             else
             {
-                // ƒhƒƒbƒv‚ğó‚¯“ü‚ê‚È‚¢
+                // ãƒ‰ãƒ­ãƒƒãƒ—ã‚’å—ã‘å…¥ã‚Œãªã„
                 e.Effect = DragDropEffects.None;
             }
         }
@@ -328,41 +349,159 @@ namespace ImageAdjuster
             if (listView_FileList.SelectedItems.Count != 0)
             {
                 var item = listView_FileList.SelectedItems[0];
-                var path = item.SubItems[1].Text;
+                var path = item.SubItems[(int)LISTVIEW_COLUMN_HEADER.PATH].Text;
 
                 var img = Exec(path);
+                //SaveImage(img, path);
 
-                pictureBox_Before.Image = AdjustImage(pictureBox_Before, Image.FromFile(path));
+                pictureBox_Before.Image = AdjustImage(pictureBox_Before, CreateImage(path));
                 pictureBox_After.Image = AdjustImage(pictureBox_After, img);
 
             }
         }
 
+        private async void button_Exec_Click(object sender, EventArgs e)
+        {
+
+            if(m_Exec == true)
+            {
+                m_Exec = false;
+                return;
+            }
+
+            if(m_EventEnable == false) { return; }
+
+            m_EventEnable = false;
+
+            button_Exec.Text = "ã‚­ãƒ£ãƒ³ã‚»ãƒ«";
+
+            m_Exec = true;
+
+            // éåŒæœŸã§FuncAã‚’å®Ÿè¡Œã™ã‚‹
+            await Task.Run(() => ExecAdjust());
+
+            m_Exec = false;
+            m_EventEnable = true;
+            button_Exec.Text = "å®Ÿè¡Œ";
+
+            label_Status.Text = "ä½•ã‚‚ã—ã¦ãªã„ã‚ˆ";
+
+        }
+
+        private void SaveImage(Image img, string path)
+        {
+            var result = false;
+            while (!result)
+            {
+                try
+                {
+                    img.Save(path, ImageFormat.Png);
+                    Debug.WriteLine("ä¿å­˜æˆåŠŸ");
+                    result = true;
+                }
+                catch 
+                {
+                    Debug.WriteLine("ä¿å­˜å¤±æ•—:" + path);
+                    Thread.Sleep(500);
+                }
+            }
+        }
+
+
+            private void ExecAdjust()
+        {
+            HashSet<string> pathList = new HashSet<string>();
+
+            Invoke((MethodInvoker)delegate
+            {
+                foreach (ListViewItem item in listView_FileList.Items)
+                {
+                    pathList.Add(item.SubItems[(int)LISTVIEW_COLUMN_HEADER.PATH].Text);
+                }
+            });
+
+            int i = 1;
+            foreach (var path in pathList) { 
+
+                if(m_Exec == false) { break; }
+
+                if(GetListViewState(path) == m_StateDic[LISTVIEW_STATE.COMPLETED]) { continue; }
+
+                if (!File.Exists(path)) { continue; }
+
+                SetListViewState(path, LISTVIEW_STATE.WORKING);
+
+                Invoke((MethodInvoker)delegate
+                {
+                    label_Status.Text = Path.GetFileName(path) + " å‡¦ç†ä¸­... " + i.ToString() + "/" + pathList.Count.ToString();
+                });
+
+                var img = Exec(path);
+                SaveImage(img, path);
+
+                SetListViewState(path, LISTVIEW_STATE.COMPLETED);
+
+                i++;
+
+            }
+        }
+
+        private void SetListViewState(string path, LISTVIEW_STATE state) 
+        {
+            Invoke((MethodInvoker)delegate
+            {
+                foreach (ListViewItem item in listView_FileList.Items)
+                {
+                    if (item.SubItems[(int)LISTVIEW_COLUMN_HEADER.PATH].Text == path)
+                    {
+                        item.SubItems[(int)LISTVIEW_COLUMN_HEADER.STATE].Text = m_StateDic[state];
+                        break;
+                    }
+                }
+            });
+        }
+
+        private string GetListViewState(string path)
+        {
+            var ret = "";
+            Invoke((MethodInvoker)delegate
+            {
+                foreach (ListViewItem item in listView_FileList.Items)
+                {
+                    if (item.SubItems[(int)LISTVIEW_COLUMN_HEADER.PATH].Text == path)
+                    {
+                        ret = item.SubItems[(int)LISTVIEW_COLUMN_HEADER.STATE].Text;
+                    }
+                }
+            });
+            return ret;
+        }
+
 
         private Image AdjustImage(PictureBox pb, Image img)
         {
-            // PictureBox‚ÌƒTƒCƒY‚ğæ“¾‚·‚é
+            // PictureBoxã®ã‚µã‚¤ã‚ºã‚’å–å¾—ã™ã‚‹
             int pictureBoxWidth = pb.Width;
             int pictureBoxHeight = pb.Height;
 
-            // Œ³‰æ‘œ‚ÌƒTƒCƒY‚ğæ“¾‚·‚é
+            // å…ƒç”»åƒã®ã‚µã‚¤ã‚ºã‚’å–å¾—ã™ã‚‹
             int imageWidth = img.Width;
             int imageHeight = img.Height;
 
-            // c‰¡”ä‚ğŒvZ‚·‚é
+            // ç¸¦æ¨ªæ¯”ã‚’è¨ˆç®—ã™ã‚‹
             float aspectRatio = (float)imageWidth / (float)imageHeight;
 
-            // Œ³‰æ‘œ‚ªPictureBox‚æ‚è¬‚³‚¢ê‡‚ÍAŠg‘å‚µ‚È‚¢
+            // å…ƒç”»åƒãŒPictureBoxã‚ˆã‚Šå°ã•ã„å ´åˆã¯ã€æ‹¡å¤§ã—ãªã„
             if (imageWidth <= pictureBoxWidth && imageHeight <= pictureBoxHeight)
             {
 
-                // ‰æ‘œ‚ÌGraphicsƒIƒuƒWƒFƒNƒg‚ğæ“¾‚·‚é
+                // ç”»åƒã®Graphicsã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’å–å¾—ã™ã‚‹
                 Graphics g = Graphics.FromImage(img);
 
-                // ˜g‚ğ•`‚­
+                // æ ã‚’æã
                 g.DrawRectangle(Pens.Red, 0, 0, img.Width - 1, img.Height - 1);
 
-                // ‰æ‘œ‚ğ‚»‚Ì‚Ü‚Ü•\¦‚·‚é
+                // ç”»åƒã‚’ãã®ã¾ã¾è¡¨ç¤ºã™ã‚‹
                 return img;
             }
             else
@@ -370,26 +509,26 @@ namespace ImageAdjuster
                 Image resizedImage;
                 if (aspectRatio > 1.0f)
                 {
-                    // ‰¡•‚ğk¬‚·‚é”{—¦‚ğŒvZ‚·‚é
+                    // æ¨ªå¹…ã‚’ç¸®å°ã™ã‚‹å€ç‡ã‚’è¨ˆç®—ã™ã‚‹
                     float scale = (float)pictureBoxWidth / imageWidth;
 
-                    // Œ³‰æ‘œ‚ğk¬‚·‚é
+                    // å…ƒç”»åƒã‚’ç¸®å°ã™ã‚‹
                     resizedImage = new Bitmap(img, new Size((int)(pictureBoxWidth), (int)(imageHeight * scale)));
                 }
                 else
                 {
-                    // c•‚ğk¬‚·‚é”{—¦‚ğŒvZ‚·‚é
+                    // ç¸¦å¹…ã‚’ç¸®å°ã™ã‚‹å€ç‡ã‚’è¨ˆç®—ã™ã‚‹
                     float scale = (float)pictureBoxHeight / imageHeight;
 
-                    // Œ³‰æ‘œ‚ğk¬‚·‚é
+                    // å…ƒç”»åƒã‚’ç¸®å°ã™ã‚‹
                     resizedImage = new Bitmap(img, new Size((int)(imageWidth * scale), (int)(pictureBoxHeight)));
 
                 }
 
-                // ‰æ‘œ‚ÌGraphicsƒIƒuƒWƒFƒNƒg‚ğæ“¾‚·‚é
+                // ç”»åƒã®Graphicsã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’å–å¾—ã™ã‚‹
                 Graphics g = Graphics.FromImage(resizedImage);
 
-                // ˜g‚ğ•`‚­
+                // æ ã‚’æã
                 var frameWidth = resizedImage.Width - 1;
                 var frameHeight = resizedImage.Height - 1;
 
@@ -398,7 +537,7 @@ namespace ImageAdjuster
 
                 g.DrawRectangle(Pens.Red, 0, 0, frameWidth, frameHeight);
 
-                //// k¬‚µ‚½‰æ‘œ‚ğ•\¦‚·‚é
+                //// ç¸®å°ã—ãŸç”»åƒã‚’è¡¨ç¤ºã™ã‚‹
                 return resizedImage;
             }
         }
@@ -406,10 +545,10 @@ namespace ImageAdjuster
 
         private void listView_FileList_DrawColumnHeader(object sender, DrawListViewColumnHeaderEventArgs e)
         {
-            //// ”wŒiF‚ğÔ‚É‚·‚é
+            //// èƒŒæ™¯è‰²ã‚’èµ¤ã«ã™ã‚‹
             //e.Graphics.FillRectangle(Brushes.WhiteSmoke, e.Bounds);
 
-            //// ƒeƒLƒXƒg‚ğ•`‰æ‚·‚é
+            //// ãƒ†ã‚­ã‚¹ãƒˆã‚’æç”»ã™ã‚‹
             //e.Graphics.DrawString(e.Header.Text, e.Font, Brushes.Black, e.Bounds);
         }
 
@@ -432,17 +571,23 @@ namespace ImageAdjuster
             RemoveHorizontalScrollBar(sender, e);
         }
 
-        private void button1_Click(object sender, EventArgs e)
+
+        public static System.Drawing.Image CreateImage(string filename)
         {
-
+            System.IO.FileStream fs = new System.IO.FileStream(
+                filename,
+                System.IO.FileMode.Open,
+                System.IO.FileAccess.Read);
+            System.Drawing.Image img = System.Drawing.Image.FromStream(fs);
+            fs.Close();
+            return img;
         }
-
 
         private Image Exec(string file)
         {
             var orderedArray = GetExecOrderedArray();
 
-            var img = Image.FromFile(file);
+            Image img = CreateImage(file);
 
             foreach (var exeType in orderedArray)
             {
@@ -512,10 +657,11 @@ namespace ImageAdjuster
 
 
                     default:
-                        //‰½‚à‚µ‚È‚¢
+                        //ä½•ã‚‚ã—ãªã„
                         break;
                 }
             }
+            
 
             return img;
         }
@@ -580,7 +726,7 @@ namespace ImageAdjuster
                 m_ExecOrder[(int)et] = -1;
             }
 
-            //’†ŠÔ‚Ì’l‚ªÁ‚³‚ê‚½‚ç‘O‹l‚ß‚·‚éB
+            //ä¸­é–“ã®å€¤ãŒæ¶ˆã•ã‚ŒãŸã‚‰å‰è©°ã‚ã™ã‚‹ã€‚
             for(int i = 0; i < m_ExecOrder.Length; i++)
             {
                 if (m_ExecOrder[i] > preValue)
@@ -610,7 +756,7 @@ namespace ImageAdjuster
 
             for (int i = 0; i < m_ExecOrder.Length; i++)
             {
-                //ƒ‰ƒxƒ‹XV
+                //ãƒ©ãƒ™ãƒ«æ›´æ–°
                 if(m_ExecOrderLabelArr[i] == null) { continue; }
 
                 m_ExecOrderLabelArr[i].Text = (m_ExecOrder[i] + 1).ToString();
@@ -619,7 +765,7 @@ namespace ImageAdjuster
                     m_ExecOrderLabelArr[i].Text = "";
                 }
 
-                //ƒ`ƒFƒbƒNƒ{ƒbƒNƒXXV
+                //ãƒã‚§ãƒƒã‚¯ãƒœãƒƒã‚¯ã‚¹æ›´æ–°
                 if (m_ExecCheckBoxArr[i] == null) { continue; }
 
                 m_ExecCheckBoxArr[i].Checked = !(m_ExecOrder[i] == -1);
@@ -645,18 +791,18 @@ namespace ImageAdjuster
         {
             if(pix == 0) { return img; }
 
-            // V‚µ‚¢BitmapƒIƒuƒWƒFƒNƒg‚ğì¬‚·‚é
+            // æ–°ã—ã„Bitmapã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ä½œæˆã™ã‚‹
             Bitmap newImg = new Bitmap(img.Width + pix * 2, img.Height + pix * 2);
 
-            // Šù‘¶‚Ì‰æ‘œ‚ğV‚µ‚¢‰æ‘œ‚ÉƒRƒs[‚·‚é
+            // æ—¢å­˜ã®ç”»åƒã‚’æ–°ã—ã„ç”»åƒã«ã‚³ãƒ”ãƒ¼ã™ã‚‹
             for (int x = 0; x < img.Width; x++)
             {
                 for (int y = 0; y < img.Height; y++)
                 {
-                    // Šù‘¶‚Ì‰æ‘œ‚©‚çƒsƒNƒZƒ‹‚ğæ“¾‚·‚é
+                    // æ—¢å­˜ã®ç”»åƒã‹ã‚‰ãƒ”ã‚¯ã‚»ãƒ«ã‚’å–å¾—ã™ã‚‹
                     Color pixel = img.GetPixel(x, y);
 
-                    // V‚µ‚¢‰æ‘œ‚ÉƒsƒNƒZƒ‹‚ğİ’è‚·‚é
+                    // æ–°ã—ã„ç”»åƒã«ãƒ”ã‚¯ã‚»ãƒ«ã‚’è¨­å®šã™ã‚‹
                     newImg.SetPixel(x + pix, y + pix, pixel);
                 }
             }
@@ -672,21 +818,21 @@ namespace ImageAdjuster
 
         private Image MarginRemove(Bitmap img)
         {
-            // —]”’‚ğŒŸo‚·‚é‚½‚ß‚ÌÅ¬’l
+            // ä½™ç™½ã‚’æ¤œå‡ºã™ã‚‹ãŸã‚ã®æœ€å°å€¤
             int minX = img.Width;
             int minY = img.Height;
             int maxX = 0;
             int maxY = 0;
 
-            // ‰æ‘œ‚ğƒXƒLƒƒƒ“‚·‚é
+            // ç”»åƒã‚’ã‚¹ã‚­ãƒ£ãƒ³ã™ã‚‹
             for (int x = 0; x < img.Width; x++)
             {
                 for (int y = 0; y < img.Height; y++)
                 {
-                    // ƒsƒNƒZƒ‹‚ğæ“¾‚·‚é
+                    // ãƒ”ã‚¯ã‚»ãƒ«ã‚’å–å¾—ã™ã‚‹
                     Color pixel = img.GetPixel(x, y);
 
-                    // “§–¾‚Å‚È‚¢ƒsƒNƒZƒ‹‚Ìê‡‚ÍA—]”’‚Ì‹«ŠE‚ğXV‚·‚é
+                    // é€æ˜ã§ãªã„ãƒ”ã‚¯ã‚»ãƒ«ã®å ´åˆã¯ã€ä½™ç™½ã®å¢ƒç•Œã‚’æ›´æ–°ã™ã‚‹
                     if (pixel.A != 0)
                     {
                         if (x < minX) minX = x;
@@ -697,18 +843,18 @@ namespace ImageAdjuster
                 }
             }
 
-            // V‚µ‚¢BitmapƒIƒuƒWƒFƒNƒg‚ğì¬‚·‚é
+            // æ–°ã—ã„Bitmapã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ä½œæˆã™ã‚‹
             Bitmap newImg = new Bitmap(maxX - minX + 1, maxY - minY + 1);
 
-            // —]”’‚ğíœ‚µ‚½‰æ‘œ‚ğì¬‚·‚é
+            // ä½™ç™½ã‚’å‰Šé™¤ã—ãŸç”»åƒã‚’ä½œæˆã™ã‚‹
             for (int x = minX; x <= maxX; x++)
             {
                 for (int y = minY; y <= maxY; y++)
                 {
-                    // ƒsƒNƒZƒ‹‚ğæ“¾‚·‚é
+                    // ãƒ”ã‚¯ã‚»ãƒ«ã‚’å–å¾—ã™ã‚‹
                     Color pixel = img.GetPixel(x, y);
 
-                    // V‚µ‚¢‰æ‘œ‚ÉƒsƒNƒZƒ‹‚ğİ’è‚·‚é
+                    // æ–°ã—ã„ç”»åƒã«ãƒ”ã‚¯ã‚»ãƒ«ã‚’è¨­å®šã™ã‚‹
                     newImg.SetPixel(x - minX, y - minY, pixel);
                 }
             }
@@ -719,18 +865,18 @@ namespace ImageAdjuster
 
         private Image RemoveTopMargin(Bitmap img)
         {
-            // “§–¾‚È—]”’‚Ìã’[‚ğ’T‚·
+            // é€æ˜ãªä½™ç™½ã®ä¸Šç«¯ã‚’æ¢ã™
             int top = 0;
             for (int y = 0; y < img.Height; y++)
             {
                 bool isBlank = true;
                 for (int x = 0; x < img.Width; x++)
                 {
-                    // ŠeƒsƒNƒZƒ‹‚ÌƒAƒ‹ƒtƒ@’l‚ğæ“¾
+                    // å„ãƒ”ã‚¯ã‚»ãƒ«ã®ã‚¢ãƒ«ãƒ•ã‚¡å€¤ã‚’å–å¾—
                     Color pixel = img.GetPixel(x, y);
                     if (pixel.A > 0)
                     {
-                        // ƒAƒ‹ƒtƒ@’l‚ª0‚æ‚è‘å‚«‚¢ƒsƒNƒZƒ‹‚ªŒ©‚Â‚©‚Á‚½ê‡A‚»‚±‚ª“§–¾‚È—]”’‚Ìã’[
+                        // ã‚¢ãƒ«ãƒ•ã‚¡å€¤ãŒ0ã‚ˆã‚Šå¤§ãã„ãƒ”ã‚¯ã‚»ãƒ«ãŒè¦‹ã¤ã‹ã£ãŸå ´åˆã€ãã“ãŒé€æ˜ãªä½™ç™½ã®ä¸Šç«¯
                         isBlank = false;
                         break;
                     }
@@ -742,31 +888,60 @@ namespace ImageAdjuster
                 }
             }
 
-            // o—Í‰æ‘œ‚ğì¬
+            // å‡ºåŠ›ç”»åƒã‚’ä½œæˆ
             Bitmap outputImage = new Bitmap(img.Width, img.Height - top);
 
-            CopyPixel(img, 0, top, img.Width, img.Height, ref outputImage, 0, 0);
+            CopyPixel(img, 0, top, img.Width, img.Height, outputImage, 0, 0);
 
-            // o—Í‰æ‘œ‚ğ•Û‘¶
+            // å‡ºåŠ›ç”»åƒã‚’ä¿å­˜
             return outputImage;
         }
 
-        private void CopyPixel(Bitmap src, int s_x, int s_y, int width, int height, ref Bitmap dest, int d_x, int d_y) 
+        private void CopyPixel(Bitmap src, int s_x, int s_y, int width, int height, Bitmap dest, int d_x, int d_y)
         {
-            // o—Í‰æ‘œ‚É“ü—Í‰æ‘œ‚©‚ç“§–¾‚È—]”’‚ğœ‚¢‚½•”•ª‚ğƒRƒs[‚·‚é
-            // Šù‘¶‚Ì‰æ‘œ‚ğV‚µ‚¢‰æ‘œ‚ÉƒRƒs[‚·‚é
+            // å‡ºåŠ›ç”»åƒã«å…¥åŠ›ç”»åƒã‹ã‚‰é€æ˜ãªä½™ç™½ã‚’é™¤ã„ãŸéƒ¨åˆ†ã‚’ã‚³ãƒ”ãƒ¼ã™ã‚‹
+            // æ—¢å­˜ã®ç”»åƒã‚’æ–°ã—ã„ç”»åƒã«ã‚³ãƒ”ãƒ¼ã™ã‚‹
             for (int x = s_x; x < width; x++)
             {
                 for (int y = s_y; y < height; y++)
                 {
-                    // Šù‘¶‚Ì‰æ‘œ‚©‚çƒsƒNƒZƒ‹‚ğæ“¾‚·‚é
+                    // æ—¢å­˜ã®ç”»åƒã‹ã‚‰ãƒ”ã‚¯ã‚»ãƒ«ã‚’å–å¾—ã™ã‚‹
                     Color pixel = src.GetPixel(x, y);
 
-                    // V‚µ‚¢‰æ‘œ‚ÉƒsƒNƒZƒ‹‚ğİ’è‚·‚é
+                    if(pixel.A == 0) { continue; }
+
+                    // æ–°ã—ã„ç”»åƒã«ãƒ”ã‚¯ã‚»ãƒ«ã‚’è¨­å®šã™ã‚‹
                     dest.SetPixel(x + d_x - s_x, y + d_y - s_y, pixel);
                 }
             }
         }
+
+
+
+        //private void CopyPixel(Bitmap src, int s_x, int s_y, int width, int height, Bitmap dest, int d_x, int d_y)
+        //{
+        //    // å‡ºåŠ›ç”»åƒã«å…¥åŠ›ç”»åƒã‹ã‚‰é€æ˜ãªä½™ç™½ã‚’é™¤ã„ãŸéƒ¨åˆ†ã‚’ã‚³ãƒ”ãƒ¼ã™ã‚‹
+        //    // æ—¢å­˜ã®ç”»åƒã‚’æ–°ã—ã„ç”»åƒã«ã‚³ãƒ”ãƒ¼ã™ã‚‹
+
+        //    // ä¸¦åˆ—å‡¦ç†ã§å®Ÿè¡Œã™ã‚‹ãŸã‚ã®ã‚ªãƒ—ã‚·ãƒ§ãƒ³ã‚’ä½œæˆã™ã‚‹
+        //    ParallelOptions options = new ParallelOptions();
+        //    options.MaxDegreeOfParallelism = Environment.ProcessorCount;
+
+        //    // ãƒ”ã‚¯ã‚»ãƒ«ã‚’ä¸¦åˆ—å‡¦ç†ã§ã‚³ãƒ”ãƒ¼ã™ã‚‹
+        //    Parallel.For(s_x, width, options, x =>
+        //    {
+        //        for (int y = s_y; y < height; y++)
+        //        {
+        //            // æ—¢å­˜ã®ç”»åƒã‹ã‚‰ãƒ”ã‚¯ã‚»ãƒ«ã‚’å–å¾—ã™ã‚‹
+        //            Color pixel = src.GetPixel(x, y);
+
+        //            if(pixel.A == 0) { continue; }
+
+        //            // æ–°ã—ã„ç”»åƒã«ãƒ”ã‚¯ã‚»ãƒ«ã‚’è¨­å®šã™ã‚‹
+        //            dest.SetPixel(x + d_x - s_x, y + d_y - s_y, pixel);
+        //        }
+        //    });
+        //}
 
 
         private Image RemoveBottomMargin(Image img)
@@ -791,18 +966,18 @@ namespace ImageAdjuster
 
         private Image RemoveBottomMargin(Bitmap img)
         {
-            // “§–¾‚È—]”’‚Ì‰º’[‚ğ’T‚·
+            // é€æ˜ãªä½™ç™½ã®ä¸‹ç«¯ã‚’æ¢ã™
             int bottom = 0;
             for (int y = img.Height - 1; y >= 0; y--)
             {
                 bool isBlank = true;
                 for (int x = 0; x < img.Width; x++)
                 {
-                    // ŠeƒsƒNƒZƒ‹‚ÌƒAƒ‹ƒtƒ@’l‚ğæ“¾
+                    // å„ãƒ”ã‚¯ã‚»ãƒ«ã®ã‚¢ãƒ«ãƒ•ã‚¡å€¤ã‚’å–å¾—
                     Color pixel = img.GetPixel(x, y);
                     if (pixel.A > 0)
                     {
-                        // ƒAƒ‹ƒtƒ@’l‚ª0‚æ‚è‘å‚«‚¢ƒsƒNƒZƒ‹‚ªŒ©‚Â‚©‚Á‚½ê‡A‚»‚±‚ª“§–¾‚È—]”’‚Ì‰º’[
+                        // ã‚¢ãƒ«ãƒ•ã‚¡å€¤ãŒ0ã‚ˆã‚Šå¤§ãã„ãƒ”ã‚¯ã‚»ãƒ«ãŒè¦‹ã¤ã‹ã£ãŸå ´åˆã€ãã“ãŒé€æ˜ãªä½™ç™½ã®ä¸‹ç«¯
                         isBlank = false;
                         break;
                     }
@@ -814,30 +989,30 @@ namespace ImageAdjuster
                 }
             }
 
-            // o—Í‰æ‘œ‚ğì¬
+            // å‡ºåŠ›ç”»åƒã‚’ä½œæˆ
             Bitmap outputImage = new Bitmap(img.Width, bottom + 1);
 
-            CopyPixel(img, 0, 0, img.Width, bottom, ref outputImage, 0, 0);
+            CopyPixel(img, 0, 0, img.Width, bottom, outputImage, 0, 0);
 
-            // o—Í‰æ‘œ‚ğ•Û‘¶
+            // å‡ºåŠ›ç”»åƒã‚’ä¿å­˜
             return outputImage;
         }
 
 
         private Image RemoveLeftMargin(Bitmap img)
         {
-            // “§–¾‚È—]”’‚Ì¶’[‚ğ’T‚·
+            // é€æ˜ãªä½™ç™½ã®å·¦ç«¯ã‚’æ¢ã™
             int left = 0;
             for (int x = 0; x < img.Width; x++)
             {
                 bool isBlank = true;
                 for (int y = 0; y < img.Height; y++)
                 {
-                    // ŠeƒsƒNƒZƒ‹‚ÌƒAƒ‹ƒtƒ@’l‚ğæ“¾
+                    // å„ãƒ”ã‚¯ã‚»ãƒ«ã®ã‚¢ãƒ«ãƒ•ã‚¡å€¤ã‚’å–å¾—
                     Color pixel = img.GetPixel(x, y);
                     if (pixel.A > 0)
                     {
-                        // ƒAƒ‹ƒtƒ@’l‚ª0‚æ‚è‘å‚«‚¢ƒsƒNƒZƒ‹‚ªŒ©‚Â‚©‚Á‚½ê‡A‚»‚±‚ª“§–¾‚È—]”’‚Ì¶’[
+                        // ã‚¢ãƒ«ãƒ•ã‚¡å€¤ãŒ0ã‚ˆã‚Šå¤§ãã„ãƒ”ã‚¯ã‚»ãƒ«ãŒè¦‹ã¤ã‹ã£ãŸå ´åˆã€ãã“ãŒé€æ˜ãªä½™ç™½ã®å·¦ç«¯
                         isBlank = false;
                         break;
                     }
@@ -849,30 +1024,30 @@ namespace ImageAdjuster
                 }
             }
 
-            // o—Í‰æ‘œ‚ğì¬
+            // å‡ºåŠ›ç”»åƒã‚’ä½œæˆ
             Bitmap outputImage = new Bitmap(img.Width - left, img.Height);
 
-            CopyPixel(img, left, 0, img.Width, img.Height, ref outputImage, 0, 0);
+            CopyPixel(img, left, 0, img.Width, img.Height, outputImage, 0, 0);
 
-            // o—Í‰æ‘œ‚ğ•Û‘¶
+            // å‡ºåŠ›ç”»åƒã‚’ä¿å­˜
             return outputImage;
         }
 
 
         private Image RemoveRightMargin(Bitmap img)
         {
-            // “§–¾‚È—]”’‚Ì‰E’[‚ğ’T‚·
+            // é€æ˜ãªä½™ç™½ã®å³ç«¯ã‚’æ¢ã™
             int right = 0;
             for (int x = img.Width - 1; x >= 0; x--)
             {
                 bool isBlank = true;
                 for (int y = 0; y < img.Height; y++)
                 {
-                    // ŠeƒsƒNƒZƒ‹‚ÌƒAƒ‹ƒtƒ@’l‚ğæ“¾
+                    // å„ãƒ”ã‚¯ã‚»ãƒ«ã®ã‚¢ãƒ«ãƒ•ã‚¡å€¤ã‚’å–å¾—
                     Color pixel = img.GetPixel(x, y);
                     if (pixel.A > 0)
                     {
-                        // ƒAƒ‹ƒtƒ@’l‚ª0‚æ‚è‘å‚«‚¢ƒsƒNƒZƒ‹‚ªŒ©‚Â‚©‚Á‚½ê‡A‚»‚±‚ª“§–¾‚È—]”’‚Ì‰E’[
+                        // ã‚¢ãƒ«ãƒ•ã‚¡å€¤ãŒ0ã‚ˆã‚Šå¤§ãã„ãƒ”ã‚¯ã‚»ãƒ«ãŒè¦‹ã¤ã‹ã£ãŸå ´åˆã€ãã“ãŒé€æ˜ãªä½™ç™½ã®å³ç«¯
                         isBlank = false;
                         break;
                     }
@@ -884,12 +1059,12 @@ namespace ImageAdjuster
                 }
             }
 
-            // o—Í‰æ‘œ‚ğì¬
+            // å‡ºåŠ›ç”»åƒã‚’ä½œæˆ
             Bitmap outputImage = new Bitmap(right + 1, img.Height);
 
-            CopyPixel(img, 0, 0, right, img.Height, ref outputImage, 0, 0);
+            CopyPixel(img, 0, 0, right, img.Height, outputImage, 0, 0);
 
-            // o—Í‰æ‘œ‚ğ•Û‘¶
+            // å‡ºåŠ›ç”»åƒã‚’ä¿å­˜
             return outputImage;
         }
 
@@ -898,11 +1073,11 @@ namespace ImageAdjuster
 
             if(pix == 0) { return img; }
 
-            // Œ³‚Ì‰æ‘œ‚Ì•‚Æ‚‚³‚ğæ“¾‚·‚é
+            // å…ƒã®ç”»åƒã®å¹…ã¨é«˜ã•ã‚’å–å¾—ã™ã‚‹
             int width = img.Width;
             int height = img.Height;
 
-            // V‚µ‚¢‰æ‘œ‚Ì‘å‚«‚³‚ğŒvZ‚·‚é
+            // æ–°ã—ã„ç”»åƒã®å¤§ãã•ã‚’è¨ˆç®—ã™ã‚‹
             int newWidth = width;
             int newHeight = height;
             if (direction == DIRECTION.UP || direction == DIRECTION.DOWN)
@@ -914,11 +1089,11 @@ namespace ImageAdjuster
                 newWidth += pix;
             }
 
-            // V‚µ‚¢‰æ‘œ‚ğì¬‚·‚é
+            // æ–°ã—ã„ç”»åƒã‚’ä½œæˆã™ã‚‹
             Bitmap newImage = new Bitmap(newWidth, newHeight);
 
 
-            // Œ³‚Ì‰æ‘œ‚ğV‚µ‚¢‰æ‘œ‚Éd‚Ë‚é
+            // å…ƒã®ç”»åƒã‚’æ–°ã—ã„ç”»åƒã«é‡ã­ã‚‹
             int x = 0;
             int y = 0;
             if (direction == DIRECTION.UP)
@@ -930,10 +1105,10 @@ namespace ImageAdjuster
                 x = pix;
             }
 
-            CopyPixel((Bitmap)img, 0, 0, img.Width, img.Height, ref newImage, x, y);
+            CopyPixel((Bitmap)img, 0, 0, img.Width, img.Height, newImage, x, y);
 
 
-            // •ÏX‚³‚ê‚½‰æ‘œ‚ğ•Ô‚·
+            // å¤‰æ›´ã•ã‚ŒãŸç”»åƒã‚’è¿”ã™
             return newImage;
         }
 

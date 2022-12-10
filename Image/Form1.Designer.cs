@@ -28,9 +28,10 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem("ここにファイルをドラッグ＆ドロップ");
+            System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem("ここにファイルをドラッグ＆ドロップ");
             this.checkBox_FlipHorizontal = new System.Windows.Forms.CheckBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.button_ExecClear = new System.Windows.Forms.Button();
             this.label_AlignRightOrder = new System.Windows.Forms.Label();
             this.label_AlignLeftOrder = new System.Windows.Forms.Label();
             this.label_AlignTopOrder = new System.Windows.Forms.Label();
@@ -46,9 +47,9 @@
             this.label_AlignBottomOrder = new System.Windows.Forms.Label();
             this.label_MarginAlignOrder = new System.Windows.Forms.Label();
             this.label_FlipVirticalOrder = new System.Windows.Forms.Label();
-            this.label9 = new System.Windows.Forms.Label();
+            this.label_Status = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
+            this.button_Exec = new System.Windows.Forms.Button();
             this.checkBox_FlipVirtical = new System.Windows.Forms.CheckBox();
             this.label6 = new System.Windows.Forms.Label();
             this.textBox_MarginAdjust = new System.Windows.Forms.TextBox();
@@ -65,8 +66,8 @@
             this.label7 = new System.Windows.Forms.Label();
             this.listView_FileList = new System.Windows.Forms.ListView();
             this.columnHeader_File = new System.Windows.Forms.ColumnHeader();
+            this.columnHeader_State = new System.Windows.Forms.ColumnHeader();
             this.columnHeader_Path = new System.Windows.Forms.ColumnHeader();
-            this.button_ExecClear = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Before)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_After)).BeginInit();
@@ -101,9 +102,9 @@
             this.groupBox1.Controls.Add(this.label_AlignBottomOrder);
             this.groupBox1.Controls.Add(this.label_MarginAlignOrder);
             this.groupBox1.Controls.Add(this.label_FlipVirticalOrder);
-            this.groupBox1.Controls.Add(this.label9);
+            this.groupBox1.Controls.Add(this.label_Status);
             this.groupBox1.Controls.Add(this.label8);
-            this.groupBox1.Controls.Add(this.button1);
+            this.groupBox1.Controls.Add(this.button_Exec);
             this.groupBox1.Controls.Add(this.checkBox_FlipVirtical);
             this.groupBox1.Controls.Add(this.label6);
             this.groupBox1.Controls.Add(this.textBox_MarginAdjust);
@@ -120,6 +121,16 @@
             this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "操作";
+            // 
+            // button_ExecClear
+            // 
+            this.button_ExecClear.Location = new System.Drawing.Point(65, 294);
+            this.button_ExecClear.Name = "button_ExecClear";
+            this.button_ExecClear.Size = new System.Drawing.Size(75, 23);
+            this.button_ExecClear.TabIndex = 28;
+            this.button_ExecClear.Text = "クリア";
+            this.button_ExecClear.UseVisualStyleBackColor = true;
+            this.button_ExecClear.Click += new System.EventHandler(this.button_ExecClear_Click);
             // 
             // label_AlignRightOrder
             // 
@@ -265,14 +276,14 @@
             this.label_FlipVirticalOrder.TabIndex = 13;
             this.label_FlipVirticalOrder.Text = "1";
             // 
-            // label9
+            // label_Status
             // 
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(88, 349);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(74, 15);
-            this.label9.TabIndex = 12;
-            this.label9.Text = "何もしてないよ";
+            this.label_Status.AutoSize = true;
+            this.label_Status.Location = new System.Drawing.Point(88, 349);
+            this.label_Status.Name = "label_Status";
+            this.label_Status.Size = new System.Drawing.Size(74, 15);
+            this.label_Status.TabIndex = 12;
+            this.label_Status.Text = "何もしてないよ";
             // 
             // label8
             // 
@@ -283,15 +294,15 @@
             this.label8.TabIndex = 11;
             this.label8.Text = "ステータス";
             // 
-            // button1
+            // button_Exec
             // 
-            this.button1.Location = new System.Drawing.Point(203, 375);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 10;
-            this.button1.Text = "実行";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.button_Exec.Location = new System.Drawing.Point(203, 375);
+            this.button_Exec.Name = "button_Exec";
+            this.button_Exec.Size = new System.Drawing.Size(75, 23);
+            this.button_Exec.TabIndex = 10;
+            this.button_Exec.Text = "実行";
+            this.button_Exec.UseVisualStyleBackColor = true;
+            this.button_Exec.Click += new System.EventHandler(this.button_Exec_Click);
             // 
             // checkBox_FlipVirtical
             // 
@@ -433,10 +444,11 @@
             this.listView_FileList.AutoArrange = false;
             this.listView_FileList.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader_File,
+            this.columnHeader_State,
             this.columnHeader_Path});
             this.listView_FileList.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
             this.listView_FileList.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem1});
+            listViewItem2});
             this.listView_FileList.Location = new System.Drawing.Point(341, 39);
             this.listView_FileList.Name = "listView_FileList";
             this.listView_FileList.Size = new System.Drawing.Size(280, 393);
@@ -454,22 +466,12 @@
             // columnHeader_File
             // 
             this.columnHeader_File.Text = "ファイル";
-            this.columnHeader_File.Width = 290;
+            this.columnHeader_File.Width = 230;
             // 
             // columnHeader_Path
             // 
             this.columnHeader_Path.Text = "パス";
             this.columnHeader_Path.Width = 0;
-            // 
-            // button_ExecClear
-            // 
-            this.button_ExecClear.Location = new System.Drawing.Point(65, 294);
-            this.button_ExecClear.Name = "button_ExecClear";
-            this.button_ExecClear.Size = new System.Drawing.Size(75, 23);
-            this.button_ExecClear.TabIndex = 28;
-            this.button_ExecClear.Text = "クリア";
-            this.button_ExecClear.UseVisualStyleBackColor = true;
-            this.button_ExecClear.Click += new System.EventHandler(this.button_ExecClear_Click);
             // 
             // Form1
             // 
@@ -504,9 +506,9 @@
         private Label label1;
         private TextBox textBox_AlignBottom;
         private CheckBox checkBox_AlignBottom;
-        private Label label9;
+        private Label label_Status;
         private Label label8;
-        private Button button1;
+        private Button button_Exec;
         private CheckBox checkBox_FlipVirtical;
         private Label label6;
         private TextBox textBox_MarginAdjust;
@@ -537,5 +539,6 @@
         private Label label_AlignLeftOrder;
         private Label label_AlignTopOrder;
         private Button button_ExecClear;
+        private ColumnHeader columnHeader_State;
     }
 }
