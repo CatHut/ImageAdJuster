@@ -37,6 +37,15 @@ namespace ImageAdjuster
             BOTTOM_ALIGN,
             LEFT_ALIGN,
             RIGHT_ALIGN,
+            NONE        //処理なし
+        }
+
+        enum DIRECTION
+        {
+            UP,
+            DOWN,
+            LEFT,
+            RIGHT
         }
 
 
@@ -87,10 +96,10 @@ namespace ImageAdjuster
             m_ExecCheckBoxArr[(int)EXEC_TYPE.MARGIN_ADJUST] = checkBox_MarginAdjust;
             m_ExecCheckBoxArr[(int)EXEC_TYPE.FLIP_HORIZONTAL] = checkBox_FlipHorizontal;
             m_ExecCheckBoxArr[(int)EXEC_TYPE.FLIP_VIRTICAL] = checkBox_FlipVirtical;
-            m_ExecCheckBoxArr[(int)EXEC_TYPE.TOP_ALIGN] = null;
+            m_ExecCheckBoxArr[(int)EXEC_TYPE.TOP_ALIGN] = checkBox_AlignTop;
             m_ExecCheckBoxArr[(int)EXEC_TYPE.BOTTOM_ALIGN] = checkBox_AlignBottom;
-            m_ExecCheckBoxArr[(int)EXEC_TYPE.LEFT_ALIGN] = null;
-            m_ExecCheckBoxArr[(int)EXEC_TYPE.RIGHT_ALIGN] = null;
+            m_ExecCheckBoxArr[(int)EXEC_TYPE.LEFT_ALIGN] = checkBox_AlignLeft;
+            m_ExecCheckBoxArr[(int)EXEC_TYPE.RIGHT_ALIGN] = checkBox_AlignRight;
 
 
 
@@ -98,10 +107,10 @@ namespace ImageAdjuster
             m_ExecOrderLabelArr[(int)EXEC_TYPE.MARGIN_ADJUST] = label_MarginAlignOrder;
             m_ExecOrderLabelArr[(int)EXEC_TYPE.FLIP_HORIZONTAL] = label_FlipHorizontalOrder;
             m_ExecOrderLabelArr[(int)EXEC_TYPE.FLIP_VIRTICAL] = label_FlipVirticalOrder;
-            m_ExecOrderLabelArr[(int)EXEC_TYPE.TOP_ALIGN] = null;
+            m_ExecOrderLabelArr[(int)EXEC_TYPE.TOP_ALIGN] = label_AlignTopOrder;
             m_ExecOrderLabelArr[(int)EXEC_TYPE.BOTTOM_ALIGN] = label_AlignBottomOrder;
-            m_ExecOrderLabelArr[(int)EXEC_TYPE.LEFT_ALIGN] = null;
-            m_ExecOrderLabelArr[(int)EXEC_TYPE.RIGHT_ALIGN] = null;
+            m_ExecOrderLabelArr[(int)EXEC_TYPE.LEFT_ALIGN] = label_AlignLeftOrder;
+            m_ExecOrderLabelArr[(int)EXEC_TYPE.RIGHT_ALIGN] = label_AlignRightOrder;
         }
 
 
@@ -206,30 +215,9 @@ namespace ImageAdjuster
 
         private void textBox_AlignBottom_TextChanged(object sender, EventArgs e)
         {
-            var temp = 0.0;
-            var ret = double.TryParse(textBox_AlignBottom.Text, out temp);
-
-            int input = (int)temp;
-
-            if(ret == false)
-            {
-                input = 10;
-            }
-            
-            if(input < 0)
-            {
-                input = 0;
-            }
-
-            if (input > 100000)
-            {
-                input = 10;
-            }
-
-
+            var input = ValueLimit(textBox_AlignBottom.Text, 0, 1000);
             textBox_AlignBottom.Text = input.ToString();
-
-
+            UpdatePictureBox();
 
         }
 
@@ -265,12 +253,15 @@ namespace ImageAdjuster
 
             listView_FileList.BeginUpdate();
             {
-                listView_FileList.Items.Clear();
-
                 var hashset = new HashSet<string>();
                 foreach (ListViewItem item in listView_FileList.Items)
                 {
-                    hashset.Add(item.SubItems[1].ToString());
+                    if (item.SubItems.Count == 2)
+                    {
+                        if (File.Exists(item.SubItems[1].Text)){
+                            hashset.Add(item.SubItems[1].Text);
+                        }
+                    }
                 }
 
                 foreach (var file in files)
@@ -282,6 +273,9 @@ namespace ImageAdjuster
                     }
                     hashset.Add(file);
                 }
+
+
+                listView_FileList.Items.Clear();
 
                 var itemList = new List<ListViewItem>();
                 foreach (var file in hashset)
@@ -301,6 +295,11 @@ namespace ImageAdjuster
                 }
             }
             listView_FileList.EndUpdate();
+
+            if(listView_FileList.SelectedItems.Count == 0)
+            {
+                listView_FileList.Items[0].Selected = true;
+            }
 
         }
 
@@ -391,7 +390,13 @@ namespace ImageAdjuster
                 Graphics g = Graphics.FromImage(resizedImage);
 
                 // 枠を描く
-                g.DrawRectangle(Pens.Red, 0, 0, resizedImage.Width - 3, resizedImage.Height - 3);
+                var frameWidth = resizedImage.Width - 1;
+                var frameHeight = resizedImage.Height - 1;
+
+                frameWidth -= Math.Max(0, 2 - (pictureBoxWidth - resizedImage.Width));
+                frameHeight -= Math.Max(0, 2 - (pictureBoxHeight - resizedImage.Height));
+
+                g.DrawRectangle(Pens.Red, 0, 0, frameWidth, frameHeight);
 
                 //// 縮小した画像を表示する
                 return resizedImage;
@@ -445,8 +450,9 @@ namespace ImageAdjuster
                 {
                     case EXEC_TYPE.MARGIN_ADJUST:
                         {
-                            var pix = 10;
-                            img = MarginAdjust(img, pix);
+                            var pix = int.Parse(textBox_MarginAdjust.Text);
+                            img = MarginRemove(img);
+                            img = MarginAdd(img, pix);
                         }
                         break;
 
@@ -457,13 +463,53 @@ namespace ImageAdjuster
                         }
                         break;
 
+                    case EXEC_TYPE.FLIP_VIRTICAL:
+                        {
+                            img.RotateFlip(RotateFlipType.RotateNoneFlipY);
+                        }
+                        break;
+
 
                     case EXEC_TYPE.BOTTOM_ALIGN:
                         {
-                            var pix = 10;
-                            img = AlignBottom(img, pix);
+                            var pix = int.Parse(textBox_AlignBottom.Text);
+
+                            img = RemoveBottomMargin(img);
+                            img = AddMargin(img, DIRECTION.DOWN, pix);
+
                         }
                         break;
+
+                    case EXEC_TYPE.TOP_ALIGN:
+                        {
+                            var pix = int.Parse(textBox_AlignTop.Text);
+
+                            img = RemoveTopMargin(img);
+                            img = AddMargin(img, DIRECTION.UP, pix);
+
+                        }
+                        break;
+
+                    case EXEC_TYPE.LEFT_ALIGN:
+                        {
+                            var pix = int.Parse(textBox_AlignLeft.Text);
+
+                            img = RemoveLeftMargin(img);
+                            img = AddMargin(img, DIRECTION.LEFT, pix);
+
+                        }
+                        break;
+
+                    case EXEC_TYPE.RIGHT_ALIGN:
+                        {
+                            var pix = int.Parse(textBox_AlignRight.Text);
+
+                            img = RemoveRightMargin(img);
+                            img = AddMargin(img, DIRECTION.RIGHT, pix);
+
+                        }
+                        break;
+
 
                     default:
                         //何もしない
@@ -477,6 +523,12 @@ namespace ImageAdjuster
         private EXEC_TYPE[] GetExecOrderedArray()
         {
             var ret = new EXEC_TYPE[m_ExecOrder.Length];
+
+            for (int i = 0; i < m_ExecOrder.Length; i++)
+            {
+                ret[i] = EXEC_TYPE.NONE;
+            }
+
             for (int i = 0; i < m_ExecOrder.Length; i++)
             {
                 if(m_ExecOrder[i] < 0) { continue; }
@@ -491,24 +543,28 @@ namespace ImageAdjuster
         {
             if (m_EventEnable == false) { return; }
             CheckBoxCheckedChanged(EXEC_TYPE.BOTTOM_ALIGN);
+            UpdatePictureBox();
         }
 
         private void checkBox_MarginAdjust_CheckedChanged(object sender, EventArgs e)
         {
             if (m_EventEnable == false) { return; }
             CheckBoxCheckedChanged(EXEC_TYPE.MARGIN_ADJUST);
+            UpdatePictureBox();
         }
 
         private void checkBox_FlipVirtical_CheckedChanged(object sender, EventArgs e)
         {
             if (m_EventEnable == false) { return; }
             CheckBoxCheckedChanged(EXEC_TYPE.FLIP_VIRTICAL);
+            UpdatePictureBox();
         }
 
         private void checkBox_FlipHorizontal_CheckedChanged(object sender, EventArgs e)
         {
             if (m_EventEnable == false) { return; }
             CheckBoxCheckedChanged(EXEC_TYPE.FLIP_HORIZONTAL);
+            UpdatePictureBox();
         }
 
         private void CheckBoxCheckedChanged(EXEC_TYPE et)
@@ -566,11 +622,7 @@ namespace ImageAdjuster
                 //チェックボックス更新
                 if (m_ExecCheckBoxArr[i] == null) { continue; }
 
-                m_ExecCheckBoxArr[i].Checked = true;
-                if (m_ExecOrder[i] == -1)
-                {
-                    m_ExecCheckBoxArr[i].Checked = false;
-                }
+                m_ExecCheckBoxArr[i].Checked = !(m_ExecOrder[i] == -1);
 
             }
 
@@ -578,12 +630,23 @@ namespace ImageAdjuster
 
         }
 
-        private Image MarginAdjust(Image img, int pix)
+        private Image MarginAdd(Image img, int pix)
         {
-            
+            if (pix == 0) {
+                return img;
+            }
+            else
+            {
+                return MarginAdd((Bitmap)img, pix);
+            }
+        }
+
+        private Image MarginAdd(Bitmap img, int pix)
+        {
+            if(pix == 0) { return img; }
+
             // 新しいBitmapオブジェクトを作成する
             Bitmap newImg = new Bitmap(img.Width + pix * 2, img.Height + pix * 2);
-            Bitmap bmp = (Bitmap)img;
 
             // 既存の画像を新しい画像にコピーする
             for (int x = 0; x < img.Width; x++)
@@ -591,7 +654,7 @@ namespace ImageAdjuster
                 for (int y = 0; y < img.Height; y++)
                 {
                     // 既存の画像からピクセルを取得する
-                    Color pixel = bmp.GetPixel(x, y);
+                    Color pixel = img.GetPixel(x, y);
 
                     // 新しい画像にピクセルを設定する
                     newImg.SetPixel(x + pix, y + pix, pixel);
@@ -599,6 +662,366 @@ namespace ImageAdjuster
             }
 
             return newImg;
+        }
+
+        private Image MarginRemove(Image img)
+        {
+            return MarginRemove((Bitmap)img);
+        }
+
+
+        private Image MarginRemove(Bitmap img)
+        {
+            // 余白を検出するための最小値
+            int minX = img.Width;
+            int minY = img.Height;
+            int maxX = 0;
+            int maxY = 0;
+
+            // 画像をスキャンする
+            for (int x = 0; x < img.Width; x++)
+            {
+                for (int y = 0; y < img.Height; y++)
+                {
+                    // ピクセルを取得する
+                    Color pixel = img.GetPixel(x, y);
+
+                    // 透明でないピクセルの場合は、余白の境界を更新する
+                    if (pixel.A != 0)
+                    {
+                        if (x < minX) minX = x;
+                        if (y < minY) minY = y;
+                        if (x > maxX) maxX = x;
+                        if (y > maxY) maxY = y;
+                    }
+                }
+            }
+
+            // 新しいBitmapオブジェクトを作成する
+            Bitmap newImg = new Bitmap(maxX - minX + 1, maxY - minY + 1);
+
+            // 余白を削除した画像を作成する
+            for (int x = minX; x <= maxX; x++)
+            {
+                for (int y = minY; y <= maxY; y++)
+                {
+                    // ピクセルを取得する
+                    Color pixel = img.GetPixel(x, y);
+
+                    // 新しい画像にピクセルを設定する
+                    newImg.SetPixel(x - minX, y - minY, pixel);
+                }
+            }
+
+            return newImg;
+        }
+
+
+        private Image RemoveTopMargin(Bitmap img)
+        {
+            // 透明な余白の上端を探す
+            int top = 0;
+            for (int y = 0; y < img.Height; y++)
+            {
+                bool isBlank = true;
+                for (int x = 0; x < img.Width; x++)
+                {
+                    // 各ピクセルのアルファ値を取得
+                    Color pixel = img.GetPixel(x, y);
+                    if (pixel.A > 0)
+                    {
+                        // アルファ値が0より大きいピクセルが見つかった場合、そこが透明な余白の上端
+                        isBlank = false;
+                        break;
+                    }
+                }
+                if (!isBlank)
+                {
+                    top = y;
+                    break;
+                }
+            }
+
+            // 出力画像を作成
+            Bitmap outputImage = new Bitmap(img.Width, img.Height - top);
+
+            CopyPixel(img, 0, top, img.Width, img.Height, ref outputImage, 0, 0);
+
+            // 出力画像を保存
+            return outputImage;
+        }
+
+        private void CopyPixel(Bitmap src, int s_x, int s_y, int width, int height, ref Bitmap dest, int d_x, int d_y) 
+        {
+            // 出力画像に入力画像から透明な余白を除いた部分をコピーする
+            // 既存の画像を新しい画像にコピーする
+            for (int x = s_x; x < width; x++)
+            {
+                for (int y = s_y; y < height; y++)
+                {
+                    // 既存の画像からピクセルを取得する
+                    Color pixel = src.GetPixel(x, y);
+
+                    // 新しい画像にピクセルを設定する
+                    dest.SetPixel(x + d_x - s_x, y + d_y - s_y, pixel);
+                }
+            }
+        }
+
+
+        private Image RemoveBottomMargin(Image img)
+        {
+            return RemoveBottomMargin((Bitmap)img);
+        }
+
+        private Image RemoveTopMargin(Image img)
+        {
+            return RemoveTopMargin((Bitmap)img);
+        }
+
+        private Image RemoveLeftMargin(Image img)
+        {
+            return RemoveLeftMargin((Bitmap)img);
+        }
+
+        private Image RemoveRightMargin(Image img)
+        {
+            return RemoveRightMargin((Bitmap)img);
+        }
+
+        private Image RemoveBottomMargin(Bitmap img)
+        {
+            // 透明な余白の下端を探す
+            int bottom = 0;
+            for (int y = img.Height - 1; y >= 0; y--)
+            {
+                bool isBlank = true;
+                for (int x = 0; x < img.Width; x++)
+                {
+                    // 各ピクセルのアルファ値を取得
+                    Color pixel = img.GetPixel(x, y);
+                    if (pixel.A > 0)
+                    {
+                        // アルファ値が0より大きいピクセルが見つかった場合、そこが透明な余白の下端
+                        isBlank = false;
+                        break;
+                    }
+                }
+                if (!isBlank)
+                {
+                    bottom = y;
+                    break;
+                }
+            }
+
+            // 出力画像を作成
+            Bitmap outputImage = new Bitmap(img.Width, bottom + 1);
+
+            CopyPixel(img, 0, 0, img.Width, bottom, ref outputImage, 0, 0);
+
+            // 出力画像を保存
+            return outputImage;
+        }
+
+
+        private Image RemoveLeftMargin(Bitmap img)
+        {
+            // 透明な余白の左端を探す
+            int left = 0;
+            for (int x = 0; x < img.Width; x++)
+            {
+                bool isBlank = true;
+                for (int y = 0; y < img.Height; y++)
+                {
+                    // 各ピクセルのアルファ値を取得
+                    Color pixel = img.GetPixel(x, y);
+                    if (pixel.A > 0)
+                    {
+                        // アルファ値が0より大きいピクセルが見つかった場合、そこが透明な余白の左端
+                        isBlank = false;
+                        break;
+                    }
+                }
+                if (!isBlank)
+                {
+                    left = x;
+                    break;
+                }
+            }
+
+            // 出力画像を作成
+            Bitmap outputImage = new Bitmap(img.Width - left, img.Height);
+
+            CopyPixel(img, left, 0, img.Width, img.Height, ref outputImage, 0, 0);
+
+            // 出力画像を保存
+            return outputImage;
+        }
+
+
+        private Image RemoveRightMargin(Bitmap img)
+        {
+            // 透明な余白の右端を探す
+            int right = 0;
+            for (int x = img.Width - 1; x >= 0; x--)
+            {
+                bool isBlank = true;
+                for (int y = 0; y < img.Height; y++)
+                {
+                    // 各ピクセルのアルファ値を取得
+                    Color pixel = img.GetPixel(x, y);
+                    if (pixel.A > 0)
+                    {
+                        // アルファ値が0より大きいピクセルが見つかった場合、そこが透明な余白の右端
+                        isBlank = false;
+                        break;
+                    }
+                }
+                if (!isBlank)
+                {
+                    right = x;
+                    break;
+                }
+            }
+
+            // 出力画像を作成
+            Bitmap outputImage = new Bitmap(right + 1, img.Height);
+
+            CopyPixel(img, 0, 0, right, img.Height, ref outputImage, 0, 0);
+
+            // 出力画像を保存
+            return outputImage;
+        }
+
+        private Image AddMargin(Image img, DIRECTION direction, int pix)
+        {
+
+            if(pix == 0) { return img; }
+
+            // 元の画像の幅と高さを取得する
+            int width = img.Width;
+            int height = img.Height;
+
+            // 新しい画像の大きさを計算する
+            int newWidth = width;
+            int newHeight = height;
+            if (direction == DIRECTION.UP || direction == DIRECTION.DOWN)
+            {
+                newHeight += pix;
+            }
+            else if (direction == DIRECTION.LEFT || direction == DIRECTION.RIGHT)
+            {
+                newWidth += pix;
+            }
+
+            // 新しい画像を作成する
+            Bitmap newImage = new Bitmap(newWidth, newHeight);
+
+
+            // 元の画像を新しい画像に重ねる
+            int x = 0;
+            int y = 0;
+            if (direction == DIRECTION.UP)
+            {
+                y = pix;
+            }
+            else if (direction == DIRECTION.LEFT)
+            {
+                x = pix;
+            }
+
+            CopyPixel((Bitmap)img, 0, 0, img.Width, img.Height, ref newImage, x, y);
+
+
+            // 変更された画像を返す
+            return newImage;
+        }
+
+
+        private void textBox_MarginAdjust_TextChanged(object sender, EventArgs e)
+        {
+            var input = ValueLimit(textBox_MarginAdjust.Text, 0, 1000);
+            textBox_MarginAdjust.Text = input.ToString();
+            UpdatePictureBox();
+        }
+
+        private void textBox_AlignTop_TextChanged(object sender, EventArgs e)
+        {
+            var input = ValueLimit(textBox_AlignTop.Text, 0, 1000);
+            textBox_AlignTop.Text = input.ToString();
+            UpdatePictureBox();
+
+        }
+
+        private void textBox_AlignLeft_TextChanged(object sender, EventArgs e)
+        {
+            var input = ValueLimit(textBox_AlignLeft.Text, 0, 1000);
+            textBox_AlignLeft.Text = input.ToString();
+            UpdatePictureBox();
+
+        }
+
+        private void textBox_AlignRight_TextChanged(object sender, EventArgs e)
+        {
+            var input = ValueLimit(textBox_AlignRight.Text, 0, 1000);
+            textBox_AlignRight.Text = input.ToString();
+            UpdatePictureBox();
+
+        }
+
+        private int ValueLimit(string txt, int lower, int upper)
+        {
+            var temp = 0.0;
+            var ret = double.TryParse(txt, out temp);
+
+            int input = (int)temp;
+
+            if (ret == false)
+            {
+                input = lower;
+            }
+
+            input = Math.Max(lower, input);
+            input = Math.Min(upper, input);
+
+            return input;
+        }
+
+        private void checkBox_AlignTop_CheckedChanged(object sender, EventArgs e)
+        {
+            if (m_EventEnable == false) { return; }
+            CheckBoxCheckedChanged(EXEC_TYPE.TOP_ALIGN);
+            UpdatePictureBox();
+        }
+
+        private void checkBox_AlignLeft_CheckedChanged(object sender, EventArgs e)
+        {
+            if (m_EventEnable == false) { return; }
+            CheckBoxCheckedChanged(EXEC_TYPE.LEFT_ALIGN);
+            UpdatePictureBox();
+
+        }
+
+        private void checkBox_AlignRight_CheckedChanged(object sender, EventArgs e)
+        {
+            if (m_EventEnable == false) { return; }
+            CheckBoxCheckedChanged(EXEC_TYPE.RIGHT_ALIGN);
+            UpdatePictureBox();
+        }
+
+        private void button_ExecClear_Click(object sender, EventArgs e)
+        {
+            ClearExecCheckBox();
+        }
+
+        private void ClearExecCheckBox()
+        {
+            for(int i = 0; i < m_ExecOrder.Length; i++)
+            {
+                m_ExecOrder[i] = -1;
+            }
+            UpdateUI();
+            UpdatePictureBox();
         }
 
     }
