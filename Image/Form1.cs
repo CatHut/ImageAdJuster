@@ -9,14 +9,17 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Drawing.Printing;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Net.Mime.MediaTypeNames;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Header;
+using Image = System.Drawing.Image;
 
 namespace ImageAdjuster
 {
@@ -318,8 +321,83 @@ namespace ImageAdjuster
 
         private void listView_FileList_SelectedIndexChanged(object sender, EventArgs e)
         {
-
+            UpdatePictureBox();
         }
+
+        private void UpdatePictureBox()
+        {
+            if (listView_FileList.SelectedItems.Count != 0)
+            {
+                var item = listView_FileList.SelectedItems[0];
+                var path = item.SubItems[1].Text;
+
+                var img = Exec(path);
+
+                pictureBox_Before.Image = AdjustImage(pictureBox_Before, Image.FromFile(path));
+                pictureBox_After.Image = AdjustImage(pictureBox_After, img);
+
+            }
+        }
+
+
+        private Image AdjustImage(PictureBox pb, Image img)
+        {
+            // PictureBoxのサイズを取得する
+            int pictureBoxWidth = pb.Width;
+            int pictureBoxHeight = pb.Height;
+
+            // 元画像のサイズを取得する
+            int imageWidth = img.Width;
+            int imageHeight = img.Height;
+
+            // 縦横比を計算する
+            float aspectRatio = (float)imageWidth / (float)imageHeight;
+
+            // 元画像がPictureBoxより小さい場合は、拡大しない
+            if (imageWidth <= pictureBoxWidth && imageHeight <= pictureBoxHeight)
+            {
+
+                // 画像のGraphicsオブジェクトを取得する
+                Graphics g = Graphics.FromImage(img);
+
+                // 枠を描く
+                g.DrawRectangle(Pens.Red, 0, 0, img.Width - 1, img.Height - 1);
+
+                // 画像をそのまま表示する
+                return img;
+            }
+            else
+            {
+                Image resizedImage;
+                if (aspectRatio > 1.0f)
+                {
+                    // 横幅を縮小する倍率を計算する
+                    float scale = (float)pictureBoxWidth / imageWidth;
+
+                    // 元画像を縮小する
+                    resizedImage = new Bitmap(img, new Size((int)(pictureBoxWidth), (int)(imageHeight * scale)));
+                }
+                else
+                {
+                    // 縦幅を縮小する倍率を計算する
+                    float scale = (float)pictureBoxHeight / imageHeight;
+
+                    // 元画像を縮小する
+                    resizedImage = new Bitmap(img, new Size((int)(imageWidth * scale), (int)(pictureBoxHeight)));
+
+                }
+
+                // 画像のGraphicsオブジェクトを取得する
+                Graphics g = Graphics.FromImage(resizedImage);
+
+                // 枠を描く
+                g.DrawRectangle(Pens.Red, 0, 0, resizedImage.Width - 3, resizedImage.Height - 3);
+
+                //// 縮小した画像を表示する
+                return resizedImage;
+            }
+        }
+
 
         private void listView_FileList_DrawColumnHeader(object sender, DrawListViewColumnHeaderEventArgs e)
         {
@@ -365,6 +443,14 @@ namespace ImageAdjuster
             {
                 switch (exeType)
                 {
+                    case EXEC_TYPE.MARGIN_ADJUST:
+                        {
+                            var pix = 10;
+                            img = MarginAdjust(img, pix);
+                        }
+                        break;
+
+
                     case EXEC_TYPE.FLIP_HORIZONTAL:
                         {
                             img.RotateFlip(RotateFlipType.RotateNoneFlipX);
@@ -378,9 +464,12 @@ namespace ImageAdjuster
                             img = AlignBottom(img, pix);
                         }
                         break;
+
+                    default:
+                        //何もしない
+                        break;
                 }
             }
-
 
             return img;
         }
@@ -390,6 +479,8 @@ namespace ImageAdjuster
             var ret = new EXEC_TYPE[m_ExecOrder.Length];
             for (int i = 0; i < m_ExecOrder.Length; i++)
             {
+                if(m_ExecOrder[i] < 0) { continue; }
+
                 ret[m_ExecOrder[i]] = (EXEC_TYPE)i;
             }
 
@@ -485,6 +576,29 @@ namespace ImageAdjuster
 
             m_EventEnable = true;
 
+        }
+
+        private Image MarginAdjust(Image img, int pix)
+        {
+            
+            // 新しいBitmapオブジェクトを作成する
+            Bitmap newImg = new Bitmap(img.Width + pix * 2, img.Height + pix * 2);
+            Bitmap bmp = (Bitmap)img;
+
+            // 既存の画像を新しい画像にコピーする
+            for (int x = 0; x < img.Width; x++)
+            {
+                for (int y = 0; y < img.Height; y++)
+                {
+                    // 既存の画像からピクセルを取得する
+                    Color pixel = bmp.GetPixel(x, y);
+
+                    // 新しい画像にピクセルを設定する
+                    newImg.SetPixel(x + pix, y + pix, pixel);
+                }
+            }
+
+            return newImg;
         }
 
     }

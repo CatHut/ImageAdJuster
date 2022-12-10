@@ -31,6 +31,9 @@
             System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem("ここにファイルをドラッグ＆ドロップ");
             this.checkBox_FlipHorizontal = new System.Windows.Forms.CheckBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.label_AlignBottomOrder = new System.Windows.Forms.Label();
+            this.label_MarginAlignOrder = new System.Windows.Forms.Label();
+            this.label_FlipVirticalOrder = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
@@ -43,20 +46,17 @@
             this.label1 = new System.Windows.Forms.Label();
             this.textBox_AlignBottom = new System.Windows.Forms.TextBox();
             this.checkBox_AlignBottom = new System.Windows.Forms.CheckBox();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.pictureBox2 = new System.Windows.Forms.PictureBox();
+            this.pictureBox_Before = new System.Windows.Forms.PictureBox();
+            this.pictureBox_After = new System.Windows.Forms.PictureBox();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.listView_FileList = new System.Windows.Forms.ListView();
             this.columnHeader_File = new System.Windows.Forms.ColumnHeader();
             this.columnHeader_Path = new System.Windows.Forms.ColumnHeader();
-            this.label_FlipVirticalOrder = new System.Windows.Forms.Label();
-            this.label_MarginAlignOrder = new System.Windows.Forms.Label();
-            this.label_AlignBottomOrder = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Before)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_After)).BeginInit();
             this.SuspendLayout();
             // 
             // checkBox_FlipHorizontal
@@ -94,6 +94,33 @@
             this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "操作";
+            // 
+            // label_AlignBottomOrder
+            // 
+            this.label_AlignBottomOrder.AutoSize = true;
+            this.label_AlignBottomOrder.Location = new System.Drawing.Point(16, 148);
+            this.label_AlignBottomOrder.Name = "label_AlignBottomOrder";
+            this.label_AlignBottomOrder.Size = new System.Drawing.Size(13, 15);
+            this.label_AlignBottomOrder.TabIndex = 15;
+            this.label_AlignBottomOrder.Text = "1";
+            // 
+            // label_MarginAlignOrder
+            // 
+            this.label_MarginAlignOrder.AutoSize = true;
+            this.label_MarginAlignOrder.Location = new System.Drawing.Point(16, 114);
+            this.label_MarginAlignOrder.Name = "label_MarginAlignOrder";
+            this.label_MarginAlignOrder.Size = new System.Drawing.Size(13, 15);
+            this.label_MarginAlignOrder.TabIndex = 14;
+            this.label_MarginAlignOrder.Text = "1";
+            // 
+            // label_FlipVirticalOrder
+            // 
+            this.label_FlipVirticalOrder.AutoSize = true;
+            this.label_FlipVirticalOrder.Location = new System.Drawing.Point(16, 68);
+            this.label_FlipVirticalOrder.Name = "label_FlipVirticalOrder";
+            this.label_FlipVirticalOrder.Size = new System.Drawing.Size(13, 15);
+            this.label_FlipVirticalOrder.TabIndex = 13;
+            this.label_FlipVirticalOrder.Text = "1";
             // 
             // label9
             // 
@@ -211,21 +238,23 @@
             this.checkBox_AlignBottom.UseVisualStyleBackColor = true;
             this.checkBox_AlignBottom.CheckedChanged += new System.EventHandler(this.checkBox_AlignBottom_CheckedChanged);
             // 
-            // pictureBox1
+            // pictureBox_Before
             // 
-            this.pictureBox1.Location = new System.Drawing.Point(703, 98);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(290, 290);
-            this.pictureBox1.TabIndex = 2;
-            this.pictureBox1.TabStop = false;
+            this.pictureBox_Before.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.pictureBox_Before.Location = new System.Drawing.Point(703, 98);
+            this.pictureBox_Before.Name = "pictureBox_Before";
+            this.pictureBox_Before.Size = new System.Drawing.Size(290, 290);
+            this.pictureBox_Before.TabIndex = 2;
+            this.pictureBox_Before.TabStop = false;
             // 
-            // pictureBox2
+            // pictureBox_After
             // 
-            this.pictureBox2.Location = new System.Drawing.Point(1042, 98);
-            this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(290, 290);
-            this.pictureBox2.TabIndex = 3;
-            this.pictureBox2.TabStop = false;
+            this.pictureBox_After.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.pictureBox_After.Location = new System.Drawing.Point(1042, 98);
+            this.pictureBox_After.Name = "pictureBox_After";
+            this.pictureBox_After.Size = new System.Drawing.Size(290, 290);
+            this.pictureBox_After.TabIndex = 3;
+            this.pictureBox_After.TabStop = false;
             // 
             // label3
             // 
@@ -288,33 +317,6 @@
             this.columnHeader_Path.Text = "パス";
             this.columnHeader_Path.Width = 0;
             // 
-            // label_FlipVirticalOrder
-            // 
-            this.label_FlipVirticalOrder.AutoSize = true;
-            this.label_FlipVirticalOrder.Location = new System.Drawing.Point(16, 68);
-            this.label_FlipVirticalOrder.Name = "label_FlipVirticalOrder";
-            this.label_FlipVirticalOrder.Size = new System.Drawing.Size(13, 15);
-            this.label_FlipVirticalOrder.TabIndex = 13;
-            this.label_FlipVirticalOrder.Text = "1";
-            // 
-            // label_MarginAlignOrder
-            // 
-            this.label_MarginAlignOrder.AutoSize = true;
-            this.label_MarginAlignOrder.Location = new System.Drawing.Point(16, 114);
-            this.label_MarginAlignOrder.Name = "label_MarginAlignOrder";
-            this.label_MarginAlignOrder.Size = new System.Drawing.Size(13, 15);
-            this.label_MarginAlignOrder.TabIndex = 14;
-            this.label_MarginAlignOrder.Text = "1";
-            // 
-            // label_AlignBottomOrder
-            // 
-            this.label_AlignBottomOrder.AutoSize = true;
-            this.label_AlignBottomOrder.Location = new System.Drawing.Point(16, 148);
-            this.label_AlignBottomOrder.Name = "label_AlignBottomOrder";
-            this.label_AlignBottomOrder.Size = new System.Drawing.Size(13, 15);
-            this.label_AlignBottomOrder.TabIndex = 15;
-            this.label_AlignBottomOrder.Text = "1";
-            // 
             // Form1
             // 
             this.AllowDrop = true;
@@ -325,8 +327,8 @@
             this.Controls.Add(this.label7);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
-            this.Controls.Add(this.pictureBox2);
-            this.Controls.Add(this.pictureBox1);
+            this.Controls.Add(this.pictureBox_After);
+            this.Controls.Add(this.pictureBox_Before);
             this.Controls.Add(this.groupBox1);
             this.Name = "Form1";
             this.Text = "Form1";
@@ -334,8 +336,8 @@
             this.DragEnter += new System.Windows.Forms.DragEventHandler(this.Form1_DragEnter);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Before)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_After)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -357,8 +359,8 @@
         private CheckBox checkBox_MarginAdjust;
         private Label label_FlipHorizontalOrder;
         private Label label2;
-        private PictureBox pictureBox1;
-        private PictureBox pictureBox2;
+        private PictureBox pictureBox_Before;
+        private PictureBox pictureBox_After;
         private Label label3;
         private Label label4;
         private Label label7;
