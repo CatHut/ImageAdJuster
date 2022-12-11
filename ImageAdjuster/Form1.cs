@@ -199,7 +199,7 @@ namespace ImageAdjuster
 
 
 
-
+            
 
 
 
@@ -292,7 +292,20 @@ namespace ImageAdjuster
                 }
                 listView_FileList.EndUpdate();
 
-                m_preSelectedIdx = int.MinValue;
+                //m_preSelectedIdx = int.MinValue;
+
+            }
+
+            if (e.KeyCode == Keys.Up || e.KeyCode == Keys.Down)
+            {
+                var idx = 0;
+
+                if(e.KeyCode == Keys.Down)
+                {
+                    idx = listView_FileList.SelectedItems.Count - 1;
+                }
+
+                UpdatePictureBox(idx);
 
             }
         }
@@ -384,6 +397,7 @@ namespace ImageAdjuster
 
                 var item = listView_FileList.SelectedItems[0];
                 var path = item.SubItems[(int)LISTVIEW_COLUMN_HEADER.PATH].Text;
+                var file = item.SubItems[(int)LISTVIEW_COLUMN_HEADER.FILE].Text;
 
                 if (!File.Exists(path)) { return; }
 
@@ -393,7 +407,34 @@ namespace ImageAdjuster
                 pictureBox_Before.Image = AdjustImage(pictureBox_Before, CreateImage(path));
                 pictureBox_After.Image = AdjustImage(pictureBox_After, img);
 
+                label_BeforeSize.Text = pictureBox_Before.Image.Width.ToString() + " ✕ " + pictureBox_Before.Image.Height.ToString();
+                label_AfterSize.Text = img.Width.ToString() + " ✕ " + img.Height.ToString();
+
+                label_FileName.Text = file;
+
             }
+        }
+
+        private void UpdatePictureBox(int idx)
+        {
+            if (listView_FileList.SelectedItems[idx].SubItems.Count < 2) { return; }
+
+            var item = listView_FileList.SelectedItems[idx];
+            var path = item.SubItems[(int)LISTVIEW_COLUMN_HEADER.PATH].Text;
+            var file = item.SubItems[(int)LISTVIEW_COLUMN_HEADER.FILE].Text;
+
+            if (!File.Exists(path)) { return; }
+
+            var img = Exec(path);
+            //SaveImage(img, path);
+
+
+            pictureBox_Before.Image = AdjustImage(pictureBox_Before, CreateImage(path));
+            pictureBox_After.Image = AdjustImage(pictureBox_After, img);
+            label_BeforeSize.Text = pictureBox_Before.Image.Width.ToString() + " ✕ " + pictureBox_Before.Image.Height.ToString();
+            label_AfterSize.Text = img.Width.ToString() + " ✕ " + img.Height.ToString();
+            label_FileName.Text = file;
+
         }
 
         private async void button_Exec_Click(object sender, EventArgs e)
@@ -421,6 +462,7 @@ namespace ImageAdjuster
             button_Exec.Text = "実行";
 
             label_Status.Text = "何もしてないよ";
+            label_Progress.Text = "";
 
         }
 
@@ -470,7 +512,8 @@ namespace ImageAdjuster
 
                 Invoke((MethodInvoker)delegate
                 {
-                    label_Status.Text = Path.GetFileName(path) + " 処理中... " + i.ToString() + "/" + pathList.Count.ToString();
+                    label_Status.Text = " 処理中:" + Path.GetFileName(path);
+                    label_Progress.Text = i.ToString().PadLeft(5, ' ') + "/" + pathList.Count.ToString().PadLeft(5, ' ');
                 });
 
                 var img = Exec(path);

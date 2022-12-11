@@ -32,6 +32,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.checkBox_FlipHorizontal = new System.Windows.Forms.CheckBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.label_Progress = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
             this.trackBar_ThuresholdAlpha = new System.Windows.Forms.TrackBar();
             this.textBox_ThuresholdAlpha = new System.Windows.Forms.TextBox();
@@ -72,6 +73,11 @@
             this.columnHeader_File = new System.Windows.Forms.ColumnHeader();
             this.columnHeader_State = new System.Windows.Forms.ColumnHeader();
             this.columnHeader_Path = new System.Windows.Forms.ColumnHeader();
+            this.label_FileName = new System.Windows.Forms.Label();
+            this.label_BeforeSizeTitle = new System.Windows.Forms.Label();
+            this.label_BeforeSize = new System.Windows.Forms.Label();
+            this.label_AfterSizeTitle = new System.Windows.Forms.Label();
+            this.label_AfterSize = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar_ThuresholdAlpha)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Before)).BeginInit();
@@ -91,6 +97,7 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.label_Progress);
             this.groupBox1.Controls.Add(this.label9);
             this.groupBox1.Controls.Add(this.trackBar_ThuresholdAlpha);
             this.groupBox1.Controls.Add(this.textBox_ThuresholdAlpha);
@@ -129,6 +136,13 @@
             this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "操作";
+            // 
+            // label_Progress
+            // 
+            this.label_Progress.Location = new System.Drawing.Point(78, 390);
+            this.label_Progress.Name = "label_Progress";
+            this.label_Progress.Size = new System.Drawing.Size(74, 15);
+            this.label_Progress.TabIndex = 32;
             // 
             // label9
             // 
@@ -516,12 +530,59 @@
             this.columnHeader_Path.Text = "パス";
             this.columnHeader_Path.Width = 0;
             // 
+            // label_FileName
+            // 
+            this.label_FileName.AutoSize = true;
+            this.label_FileName.Location = new System.Drawing.Point(700, 21);
+            this.label_FileName.Name = "label_FileName";
+            this.label_FileName.Size = new System.Drawing.Size(0, 15);
+            this.label_FileName.TabIndex = 12;
+            // 
+            // label_BeforeSizeTitle
+            // 
+            this.label_BeforeSizeTitle.AutoSize = true;
+            this.label_BeforeSizeTitle.Location = new System.Drawing.Point(880, 21);
+            this.label_BeforeSizeTitle.Name = "label_BeforeSizeTitle";
+            this.label_BeforeSizeTitle.Size = new System.Drawing.Size(35, 15);
+            this.label_BeforeSizeTitle.TabIndex = 13;
+            this.label_BeforeSizeTitle.Text = "サイズ";
+            // 
+            // label_BeforeSize
+            // 
+            this.label_BeforeSize.AutoSize = true;
+            this.label_BeforeSize.Location = new System.Drawing.Point(921, 21);
+            this.label_BeforeSize.Name = "label_BeforeSize";
+            this.label_BeforeSize.Size = new System.Drawing.Size(0, 15);
+            this.label_BeforeSize.TabIndex = 14;
+            // 
+            // label_AfterSizeTitle
+            // 
+            this.label_AfterSizeTitle.AutoSize = true;
+            this.label_AfterSizeTitle.Location = new System.Drawing.Point(1173, 21);
+            this.label_AfterSizeTitle.Name = "label_AfterSizeTitle";
+            this.label_AfterSizeTitle.Size = new System.Drawing.Size(35, 15);
+            this.label_AfterSizeTitle.TabIndex = 15;
+            this.label_AfterSizeTitle.Text = "サイズ";
+            // 
+            // label_AfterSize
+            // 
+            this.label_AfterSize.AutoSize = true;
+            this.label_AfterSize.Location = new System.Drawing.Point(1214, 21);
+            this.label_AfterSize.Name = "label_AfterSize";
+            this.label_AfterSize.Size = new System.Drawing.Size(0, 15);
+            this.label_AfterSize.TabIndex = 16;
+            // 
             // Form1
             // 
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1484, 451);
+            this.Controls.Add(this.label_AfterSize);
+            this.Controls.Add(this.label_AfterSizeTitle);
+            this.Controls.Add(this.label_BeforeSize);
+            this.Controls.Add(this.label_BeforeSizeTitle);
+            this.Controls.Add(this.label_FileName);
             this.Controls.Add(this.listView_FileList);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.label4);
@@ -589,5 +650,11 @@
         private TrackBar trackBar_ThuresholdAlpha;
         private TextBox textBox_ThuresholdAlpha;
         private Label label9;
+        private Label label_FileName;
+        private Label label_Progress;
+        private Label label_BeforeSizeTitle;
+        private Label label_BeforeSize;
+        private Label label_AfterSizeTitle;
+        private Label label_AfterSize;
     }
 }
