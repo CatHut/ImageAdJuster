@@ -296,14 +296,25 @@ namespace ImageAdjuster
 
             }
 
+            if ((Control.ModifierKeys & Keys.Control) == Keys.Control) 
+            {
+                return;
+            }
+
+
             if (e.KeyCode == Keys.Up || e.KeyCode == Keys.Down)
             {
-                var idx = 0;
+                var idx = listView_FileList.FocusedItem.Index - 1;
 
                 if(e.KeyCode == Keys.Down)
                 {
-                    idx = listView_FileList.SelectedItems.Count - 1;
+                    idx = listView_FileList.FocusedItem.Index + 1;
                 }
+
+                Debug.WriteLine("focus:" + listView_FileList.FocusedItem.Index.ToString());
+
+                idx = Math.Max(0, idx);
+                idx = Math.Min(listView_FileList.Items.Count - 1, idx);
 
                 UpdatePictureBox(idx);
 
@@ -417,9 +428,9 @@ namespace ImageAdjuster
 
         private void UpdatePictureBox(int idx)
         {
-            if (listView_FileList.SelectedItems[idx].SubItems.Count < 2) { return; }
+            if (listView_FileList.Items[idx].SubItems.Count < 2) { return; }
 
-            var item = listView_FileList.SelectedItems[idx];
+            var item = listView_FileList.Items[idx];
             var path = item.SubItems[(int)LISTVIEW_COLUMN_HEADER.PATH].Text;
             var file = item.SubItems[(int)LISTVIEW_COLUMN_HEADER.FILE].Text;
 
