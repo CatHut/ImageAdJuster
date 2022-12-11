@@ -32,6 +32,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.checkBox_FlipHorizontal = new System.Windows.Forms.CheckBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.label9 = new System.Windows.Forms.Label();
             this.trackBar_ThuresholdAlpha = new System.Windows.Forms.TrackBar();
             this.textBox_ThuresholdAlpha = new System.Windows.Forms.TextBox();
             this.button_ExecClear = new System.Windows.Forms.Button();
@@ -71,7 +72,6 @@
             this.columnHeader_File = new System.Windows.Forms.ColumnHeader();
             this.columnHeader_State = new System.Windows.Forms.ColumnHeader();
             this.columnHeader_Path = new System.Windows.Forms.ColumnHeader();
-            this.label9 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar_ThuresholdAlpha)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Before)).BeginInit();
@@ -129,6 +129,15 @@
             this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "操作";
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(66, 306);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(131, 15);
+            this.label9.TabIndex = 31;
+            this.label9.Text = "透明判定アルファ しきい値";
             // 
             // trackBar_ThuresholdAlpha
             // 
@@ -507,15 +516,6 @@
             this.columnHeader_Path.Text = "パス";
             this.columnHeader_Path.Width = 0;
             // 
-            // label9
-            // 
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(66, 306);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(131, 15);
-            this.label9.TabIndex = 31;
-            this.label9.Text = "透明判定アルファ しきい値";
-            // 
             // Form1
             // 
             this.AllowDrop = true;
@@ -532,6 +532,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Form1";
             this.Text = "ImageAdjuster";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form1_FormClosed);
             this.DragDrop += new System.Windows.Forms.DragEventHandler(this.Form1_DragDrop);
             this.DragEnter += new System.Windows.Forms.DragEventHandler(this.Form1_DragEnter);
             this.groupBox1.ResumeLayout(false);

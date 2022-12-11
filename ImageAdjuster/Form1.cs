@@ -351,6 +351,8 @@ namespace ImageAdjuster
                 listView_FileList.Items[0].Selected = true;
             }
 
+            listView_FileList.Focus();
+            UpdatePictureBox();
         }
 
         private void listView_FileList_DragEnter(object sender, DragEventArgs e)
@@ -442,7 +444,7 @@ namespace ImageAdjuster
         }
 
 
-            private void ExecAdjust()
+        private void ExecAdjust()
         {
             HashSet<string> pathList = new HashSet<string>();
 
@@ -450,6 +452,7 @@ namespace ImageAdjuster
             {
                 foreach (ListViewItem item in listView_FileList.Items)
                 {
+                    if(item.SubItems.Count < 2) { continue; }
                     pathList.Add(item.SubItems[(int)LISTVIEW_COLUMN_HEADER.PATH].Text);
                 }
             });
@@ -1390,6 +1393,11 @@ namespace ImageAdjuster
             textBox_ThuresholdAlpha.Text = trackBar_ThuresholdAlpha.Value.ToString();
             SaveSetting();
             UpdatePictureBox();
+        }
+
+        private void Form1_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            m_APS.Exit();
         }
     }
 }
