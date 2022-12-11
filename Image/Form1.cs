@@ -82,6 +82,7 @@ namespace ImageAdjuster
 
         bool m_EventEnable = true;
         bool m_Exec = false;
+        int m_preSelectedIdx = int.MinValue;
 
 
         public Form1()
@@ -265,6 +266,8 @@ namespace ImageAdjuster
                 }
                 listView_FileList.EndUpdate();
 
+                m_preSelectedIdx = int.MinValue;
+
             }
         }
 
@@ -341,7 +344,8 @@ namespace ImageAdjuster
 
         private void listView_FileList_SelectedIndexChanged(object sender, EventArgs e)
         {
-            UpdatePictureBox();
+            //Debug.WriteLine("listView_FileList_SelectedIndexChanged Called");
+            //UpdatePictureBox();
         }
 
         private void UpdatePictureBox()
@@ -897,22 +901,48 @@ namespace ImageAdjuster
             return outputImage;
         }
 
+        //private void CopyPixel(Bitmap src, int s_x, int s_y, int width, int height, Bitmap dest, int d_x, int d_y)
+        //{
+        //    // 出力画像に入力画像から透明な余白を除いた部分をコピーする
+        //    // 既存の画像を新しい画像にコピーする
+        //    for (int x = s_x; x < width; x++)
+        //    {
+        //        for (int y = s_y; y < height; y++)
+        //        {
+        //            // 既存の画像からピクセルを取得する
+        //            Color pixel = src.GetPixel(x, y);
+
+        //            if(pixel.A == 0) { continue; }
+
+        //            // 新しい画像にピクセルを設定する
+        //            dest.SetPixel(x + d_x - s_x, y + d_y - s_y, pixel);
+        //        }
+        //    }
+        //}
+
         private void CopyPixel(Bitmap src, int s_x, int s_y, int width, int height, Bitmap dest, int d_x, int d_y)
         {
-            // 出力画像に入力画像から透明な余白を除いた部分をコピーする
+            // 出力画像に入力画像をそのままコピーする
             // 既存の画像を新しい画像にコピーする
-            for (int x = s_x; x < width; x++)
+
+            // 1 行分のデータを取得/設定するためのバッファを用意する
+            byte[] srcBuffer = new byte[width * 4];
+            byte[] destBuffer = new byte[width * 4];
+
+            for (int y = s_y; y < height; y++)
             {
-                for (int y = s_y; y < height; y++)
-                {
-                    // 既存の画像からピクセルを取得する
-                    Color pixel = src.GetPixel(x, y);
+                // 既存の画像から 1 行分のデータを取得する
+                var srcData = src.LockBits(new Rectangle(s_x, y, width, 1), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
+                Marshal.Copy(srcData.Scan0, srcBuffer, 0, srcBuffer.Length);
+                src.UnlockBits(srcData);
 
-                    if(pixel.A == 0) { continue; }
+                // 全てのピクセルを新しい画像に設定する
+                Array.Copy(srcBuffer, destBuffer, srcBuffer.Length);
 
-                    // 新しい画像にピクセルを設定する
-                    dest.SetPixel(x + d_x - s_x, y + d_y - s_y, pixel);
-                }
+                // 新しい画像に 1 行分のデータを設定する
+                var destData = dest.LockBits(new Rectangle(d_x, y + d_y - s_y, width, 1), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
+                Marshal.Copy(destBuffer, 0, destData.Scan0, destBuffer.Length);
+                dest.UnlockBits(destData);
             }
         }
 
@@ -1199,5 +1229,17 @@ namespace ImageAdjuster
             UpdatePictureBox();
         }
 
+        private void listView_FileList_Click(object sender, EventArgs e)
+        {
+
+            Debug.WriteLine("listView_FileList_Click Called");
+            Debug.WriteLine("SelectedIndex: " );
+            foreach(var i in listView_FileList.SelectedIndices)
+            {
+                Debug.WriteLine(i.ToString());
+            }
+            
+            UpdatePictureBox();
+        }
     }
 }

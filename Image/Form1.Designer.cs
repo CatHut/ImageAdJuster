@@ -28,7 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem("ここにファイルをドラッグ＆ドロップ");
+            System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem("ここにファイルをドラッグ＆ドロップ");
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.checkBox_FlipHorizontal = new System.Windows.Forms.CheckBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.button_ExecClear = new System.Windows.Forms.Button();
@@ -117,7 +118,7 @@
             this.groupBox1.Controls.Add(this.checkBox_FlipHorizontal);
             this.groupBox1.Location = new System.Drawing.Point(12, 12);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(310, 420);
+            this.groupBox1.Size = new System.Drawing.Size(310, 427);
             this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "操作";
@@ -396,25 +397,25 @@
             // pictureBox_Before
             // 
             this.pictureBox_Before.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pictureBox_Before.Location = new System.Drawing.Point(703, 98);
+            this.pictureBox_Before.Location = new System.Drawing.Point(651, 39);
             this.pictureBox_Before.Name = "pictureBox_Before";
-            this.pictureBox_Before.Size = new System.Drawing.Size(290, 290);
+            this.pictureBox_Before.Size = new System.Drawing.Size(400, 400);
             this.pictureBox_Before.TabIndex = 2;
             this.pictureBox_Before.TabStop = false;
             // 
             // pictureBox_After
             // 
             this.pictureBox_After.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pictureBox_After.Location = new System.Drawing.Point(1042, 98);
+            this.pictureBox_After.Location = new System.Drawing.Point(1072, 39);
             this.pictureBox_After.Name = "pictureBox_After";
-            this.pictureBox_After.Size = new System.Drawing.Size(290, 290);
+            this.pictureBox_After.Size = new System.Drawing.Size(400, 400);
             this.pictureBox_After.TabIndex = 3;
             this.pictureBox_After.TabStop = false;
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(703, 80);
+            this.label3.Location = new System.Drawing.Point(651, 21);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(43, 15);
             this.label3.TabIndex = 5;
@@ -423,7 +424,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(1042, 80);
+            this.label4.Location = new System.Drawing.Point(1072, 21);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(80, 15);
             this.label4.TabIndex = 6;
@@ -448,16 +449,17 @@
             this.columnHeader_Path});
             this.listView_FileList.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
             this.listView_FileList.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem2});
+            listViewItem1});
             this.listView_FileList.Location = new System.Drawing.Point(341, 39);
             this.listView_FileList.Name = "listView_FileList";
-            this.listView_FileList.Size = new System.Drawing.Size(280, 393);
+            this.listView_FileList.Size = new System.Drawing.Size(280, 400);
             this.listView_FileList.TabIndex = 11;
             this.listView_FileList.UseCompatibleStateImageBehavior = false;
             this.listView_FileList.View = System.Windows.Forms.View.Details;
             this.listView_FileList.ColumnWidthChanged += new System.Windows.Forms.ColumnWidthChangedEventHandler(this.listView_FileList_ColumnWidthChanged);
             this.listView_FileList.DrawColumnHeader += new System.Windows.Forms.DrawListViewColumnHeaderEventHandler(this.listView_FileList_DrawColumnHeader);
             this.listView_FileList.SelectedIndexChanged += new System.EventHandler(this.listView_FileList_SelectedIndexChanged);
+            this.listView_FileList.Click += new System.EventHandler(this.listView_FileList_Click);
             this.listView_FileList.DragDrop += new System.Windows.Forms.DragEventHandler(this.listView_FileList_DragDrop);
             this.listView_FileList.DragEnter += new System.Windows.Forms.DragEventHandler(this.listView_FileList_DragEnter);
             this.listView_FileList.KeyDown += new System.Windows.Forms.KeyEventHandler(this.listView_FileList_KeyDown);
@@ -466,7 +468,11 @@
             // columnHeader_File
             // 
             this.columnHeader_File.Text = "ファイル";
-            this.columnHeader_File.Width = 230;
+            this.columnHeader_File.Width = 200;
+            // 
+            // columnHeader_State
+            // 
+            this.columnHeader_State.Width = 90;
             // 
             // columnHeader_Path
             // 
@@ -478,7 +484,7 @@
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1405, 444);
+            this.ClientSize = new System.Drawing.Size(1484, 451);
             this.Controls.Add(this.listView_FileList);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.label4);
@@ -486,8 +492,9 @@
             this.Controls.Add(this.pictureBox_After);
             this.Controls.Add(this.pictureBox_Before);
             this.Controls.Add(this.groupBox1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Form1";
-            this.Text = "Form1";
+            this.Text = "ImageAdjuster";
             this.DragDrop += new System.Windows.Forms.DragEventHandler(this.Form1_DragDrop);
             this.DragEnter += new System.Windows.Forms.DragEventHandler(this.Form1_DragEnter);
             this.groupBox1.ResumeLayout(false);
