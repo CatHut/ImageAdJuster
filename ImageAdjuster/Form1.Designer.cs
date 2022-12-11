@@ -32,6 +32,8 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.checkBox_FlipHorizontal = new System.Windows.Forms.CheckBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.trackBar_ThuresholdAlpha = new System.Windows.Forms.TrackBar();
+            this.textBox_ThuresholdAlpha = new System.Windows.Forms.TextBox();
             this.button_ExecClear = new System.Windows.Forms.Button();
             this.label_AlignRightOrder = new System.Windows.Forms.Label();
             this.label_AlignLeftOrder = new System.Windows.Forms.Label();
@@ -69,7 +71,9 @@
             this.columnHeader_File = new System.Windows.Forms.ColumnHeader();
             this.columnHeader_State = new System.Windows.Forms.ColumnHeader();
             this.columnHeader_Path = new System.Windows.Forms.ColumnHeader();
+            this.label9 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar_ThuresholdAlpha)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Before)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_After)).BeginInit();
             this.SuspendLayout();
@@ -77,7 +81,7 @@
             // checkBox_FlipHorizontal
             // 
             this.checkBox_FlipHorizontal.AutoSize = true;
-            this.checkBox_FlipHorizontal.Location = new System.Drawing.Point(66, 68);
+            this.checkBox_FlipHorizontal.Location = new System.Drawing.Point(66, 50);
             this.checkBox_FlipHorizontal.Name = "checkBox_FlipHorizontal";
             this.checkBox_FlipHorizontal.Size = new System.Drawing.Size(74, 19);
             this.checkBox_FlipHorizontal.TabIndex = 0;
@@ -87,6 +91,9 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.label9);
+            this.groupBox1.Controls.Add(this.trackBar_ThuresholdAlpha);
+            this.groupBox1.Controls.Add(this.textBox_ThuresholdAlpha);
             this.groupBox1.Controls.Add(this.button_ExecClear);
             this.groupBox1.Controls.Add(this.label_AlignRightOrder);
             this.groupBox1.Controls.Add(this.label_AlignLeftOrder);
@@ -123,9 +130,30 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "操作";
             // 
+            // trackBar_ThuresholdAlpha
+            // 
+            this.trackBar_ThuresholdAlpha.LargeChange = 1;
+            this.trackBar_ThuresholdAlpha.Location = new System.Drawing.Point(6, 324);
+            this.trackBar_ThuresholdAlpha.Maximum = 255;
+            this.trackBar_ThuresholdAlpha.Name = "trackBar_ThuresholdAlpha";
+            this.trackBar_ThuresholdAlpha.Size = new System.Drawing.Size(182, 45);
+            this.trackBar_ThuresholdAlpha.TabIndex = 30;
+            this.trackBar_ThuresholdAlpha.TickFrequency = 16;
+            this.trackBar_ThuresholdAlpha.ValueChanged += new System.EventHandler(this.trackBar_ThuresholdAlpha_ValueChanged);
+            // 
+            // textBox_ThuresholdAlpha
+            // 
+            this.textBox_ThuresholdAlpha.Location = new System.Drawing.Point(194, 324);
+            this.textBox_ThuresholdAlpha.MaxLength = 5;
+            this.textBox_ThuresholdAlpha.Name = "textBox_ThuresholdAlpha";
+            this.textBox_ThuresholdAlpha.Size = new System.Drawing.Size(65, 23);
+            this.textBox_ThuresholdAlpha.TabIndex = 29;
+            this.textBox_ThuresholdAlpha.Text = "10";
+            this.textBox_ThuresholdAlpha.TextChanged += new System.EventHandler(this.textBox_ThuresholdAlpha_TextChanged);
+            // 
             // button_ExecClear
             // 
-            this.button_ExecClear.Location = new System.Drawing.Point(65, 294);
+            this.button_ExecClear.Location = new System.Drawing.Point(65, 267);
             this.button_ExecClear.Name = "button_ExecClear";
             this.button_ExecClear.Size = new System.Drawing.Size(75, 23);
             this.button_ExecClear.TabIndex = 28;
@@ -136,7 +164,7 @@
             // label_AlignRightOrder
             // 
             this.label_AlignRightOrder.AutoSize = true;
-            this.label_AlignRightOrder.Location = new System.Drawing.Point(26, 262);
+            this.label_AlignRightOrder.Location = new System.Drawing.Point(26, 244);
             this.label_AlignRightOrder.Name = "label_AlignRightOrder";
             this.label_AlignRightOrder.Size = new System.Drawing.Size(13, 15);
             this.label_AlignRightOrder.TabIndex = 27;
@@ -145,7 +173,7 @@
             // label_AlignLeftOrder
             // 
             this.label_AlignLeftOrder.AutoSize = true;
-            this.label_AlignLeftOrder.Location = new System.Drawing.Point(26, 230);
+            this.label_AlignLeftOrder.Location = new System.Drawing.Point(26, 212);
             this.label_AlignLeftOrder.Name = "label_AlignLeftOrder";
             this.label_AlignLeftOrder.Size = new System.Drawing.Size(13, 15);
             this.label_AlignLeftOrder.TabIndex = 26;
@@ -154,7 +182,7 @@
             // label_AlignTopOrder
             // 
             this.label_AlignTopOrder.AutoSize = true;
-            this.label_AlignTopOrder.Location = new System.Drawing.Point(26, 166);
+            this.label_AlignTopOrder.Location = new System.Drawing.Point(26, 148);
             this.label_AlignTopOrder.Name = "label_AlignTopOrder";
             this.label_AlignTopOrder.Size = new System.Drawing.Size(13, 15);
             this.label_AlignTopOrder.TabIndex = 25;
@@ -163,7 +191,7 @@
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(265, 262);
+            this.label11.Location = new System.Drawing.Point(265, 244);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(23, 15);
             this.label11.TabIndex = 24;
@@ -171,7 +199,7 @@
             // 
             // textBox_AlignRight
             // 
-            this.textBox_AlignRight.Location = new System.Drawing.Point(194, 258);
+            this.textBox_AlignRight.Location = new System.Drawing.Point(194, 240);
             this.textBox_AlignRight.MaxLength = 5;
             this.textBox_AlignRight.Name = "textBox_AlignRight";
             this.textBox_AlignRight.Size = new System.Drawing.Size(65, 23);
@@ -182,7 +210,7 @@
             // checkBox_AlignRight
             // 
             this.checkBox_AlignRight.AutoSize = true;
-            this.checkBox_AlignRight.Location = new System.Drawing.Point(66, 260);
+            this.checkBox_AlignRight.Location = new System.Drawing.Point(66, 242);
             this.checkBox_AlignRight.Name = "checkBox_AlignRight";
             this.checkBox_AlignRight.Size = new System.Drawing.Size(86, 19);
             this.checkBox_AlignRight.TabIndex = 22;
@@ -193,7 +221,7 @@
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(265, 230);
+            this.label10.Location = new System.Drawing.Point(265, 212);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(23, 15);
             this.label10.TabIndex = 21;
@@ -201,7 +229,7 @@
             // 
             // textBox_AlignLeft
             // 
-            this.textBox_AlignLeft.Location = new System.Drawing.Point(194, 226);
+            this.textBox_AlignLeft.Location = new System.Drawing.Point(194, 208);
             this.textBox_AlignLeft.MaxLength = 5;
             this.textBox_AlignLeft.Name = "textBox_AlignLeft";
             this.textBox_AlignLeft.Size = new System.Drawing.Size(65, 23);
@@ -212,7 +240,7 @@
             // checkBox_AlignLeft
             // 
             this.checkBox_AlignLeft.AutoSize = true;
-            this.checkBox_AlignLeft.Location = new System.Drawing.Point(66, 228);
+            this.checkBox_AlignLeft.Location = new System.Drawing.Point(66, 210);
             this.checkBox_AlignLeft.Name = "checkBox_AlignLeft";
             this.checkBox_AlignLeft.Size = new System.Drawing.Size(86, 19);
             this.checkBox_AlignLeft.TabIndex = 19;
@@ -223,7 +251,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(265, 166);
+            this.label5.Location = new System.Drawing.Point(265, 148);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(23, 15);
             this.label5.TabIndex = 18;
@@ -231,7 +259,7 @@
             // 
             // textBox_AlignTop
             // 
-            this.textBox_AlignTop.Location = new System.Drawing.Point(194, 162);
+            this.textBox_AlignTop.Location = new System.Drawing.Point(194, 144);
             this.textBox_AlignTop.MaxLength = 5;
             this.textBox_AlignTop.Name = "textBox_AlignTop";
             this.textBox_AlignTop.Size = new System.Drawing.Size(65, 23);
@@ -242,7 +270,7 @@
             // checkBox_AlignTop
             // 
             this.checkBox_AlignTop.AutoSize = true;
-            this.checkBox_AlignTop.Location = new System.Drawing.Point(66, 164);
+            this.checkBox_AlignTop.Location = new System.Drawing.Point(66, 146);
             this.checkBox_AlignTop.Name = "checkBox_AlignTop";
             this.checkBox_AlignTop.Size = new System.Drawing.Size(86, 19);
             this.checkBox_AlignTop.TabIndex = 16;
@@ -253,7 +281,7 @@
             // label_AlignBottomOrder
             // 
             this.label_AlignBottomOrder.AutoSize = true;
-            this.label_AlignBottomOrder.Location = new System.Drawing.Point(26, 198);
+            this.label_AlignBottomOrder.Location = new System.Drawing.Point(26, 180);
             this.label_AlignBottomOrder.Name = "label_AlignBottomOrder";
             this.label_AlignBottomOrder.Size = new System.Drawing.Size(13, 15);
             this.label_AlignBottomOrder.TabIndex = 15;
@@ -262,7 +290,7 @@
             // label_MarginAlignOrder
             // 
             this.label_MarginAlignOrder.AutoSize = true;
-            this.label_MarginAlignOrder.Location = new System.Drawing.Point(26, 134);
+            this.label_MarginAlignOrder.Location = new System.Drawing.Point(26, 116);
             this.label_MarginAlignOrder.Name = "label_MarginAlignOrder";
             this.label_MarginAlignOrder.Size = new System.Drawing.Size(13, 15);
             this.label_MarginAlignOrder.TabIndex = 14;
@@ -271,7 +299,7 @@
             // label_FlipVirticalOrder
             // 
             this.label_FlipVirticalOrder.AutoSize = true;
-            this.label_FlipVirticalOrder.Location = new System.Drawing.Point(26, 102);
+            this.label_FlipVirticalOrder.Location = new System.Drawing.Point(26, 84);
             this.label_FlipVirticalOrder.Name = "label_FlipVirticalOrder";
             this.label_FlipVirticalOrder.Size = new System.Drawing.Size(13, 15);
             this.label_FlipVirticalOrder.TabIndex = 13;
@@ -280,7 +308,7 @@
             // label_Status
             // 
             this.label_Status.AutoSize = true;
-            this.label_Status.Location = new System.Drawing.Point(88, 349);
+            this.label_Status.Location = new System.Drawing.Point(78, 372);
             this.label_Status.Name = "label_Status";
             this.label_Status.Size = new System.Drawing.Size(74, 15);
             this.label_Status.TabIndex = 12;
@@ -289,7 +317,7 @@
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(20, 349);
+            this.label8.Location = new System.Drawing.Point(10, 372);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(51, 15);
             this.label8.TabIndex = 11;
@@ -297,9 +325,9 @@
             // 
             // button_Exec
             // 
-            this.button_Exec.Location = new System.Drawing.Point(203, 375);
+            this.button_Exec.Location = new System.Drawing.Point(194, 390);
             this.button_Exec.Name = "button_Exec";
-            this.button_Exec.Size = new System.Drawing.Size(75, 23);
+            this.button_Exec.Size = new System.Drawing.Size(94, 31);
             this.button_Exec.TabIndex = 10;
             this.button_Exec.Text = "実行";
             this.button_Exec.UseVisualStyleBackColor = true;
@@ -308,7 +336,7 @@
             // checkBox_FlipVirtical
             // 
             this.checkBox_FlipVirtical.AutoSize = true;
-            this.checkBox_FlipVirtical.Location = new System.Drawing.Point(66, 100);
+            this.checkBox_FlipVirtical.Location = new System.Drawing.Point(66, 82);
             this.checkBox_FlipVirtical.Name = "checkBox_FlipVirtical";
             this.checkBox_FlipVirtical.Size = new System.Drawing.Size(74, 19);
             this.checkBox_FlipVirtical.TabIndex = 9;
@@ -319,7 +347,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(265, 134);
+            this.label6.Location = new System.Drawing.Point(265, 116);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(23, 15);
             this.label6.TabIndex = 8;
@@ -327,7 +355,7 @@
             // 
             // textBox_MarginAdjust
             // 
-            this.textBox_MarginAdjust.Location = new System.Drawing.Point(194, 130);
+            this.textBox_MarginAdjust.Location = new System.Drawing.Point(194, 112);
             this.textBox_MarginAdjust.MaxLength = 5;
             this.textBox_MarginAdjust.Name = "textBox_MarginAdjust";
             this.textBox_MarginAdjust.Size = new System.Drawing.Size(65, 23);
@@ -338,7 +366,7 @@
             // checkBox_MarginAdjust
             // 
             this.checkBox_MarginAdjust.AutoSize = true;
-            this.checkBox_MarginAdjust.Location = new System.Drawing.Point(66, 132);
+            this.checkBox_MarginAdjust.Location = new System.Drawing.Point(66, 114);
             this.checkBox_MarginAdjust.Name = "checkBox_MarginAdjust";
             this.checkBox_MarginAdjust.Size = new System.Drawing.Size(122, 19);
             this.checkBox_MarginAdjust.TabIndex = 6;
@@ -349,7 +377,7 @@
             // label_FlipHorizontalOrder
             // 
             this.label_FlipHorizontalOrder.AutoSize = true;
-            this.label_FlipHorizontalOrder.Location = new System.Drawing.Point(26, 70);
+            this.label_FlipHorizontalOrder.Location = new System.Drawing.Point(26, 52);
             this.label_FlipHorizontalOrder.Name = "label_FlipHorizontalOrder";
             this.label_FlipHorizontalOrder.Size = new System.Drawing.Size(13, 15);
             this.label_FlipHorizontalOrder.TabIndex = 5;
@@ -358,7 +386,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(6, 40);
+            this.label2.Location = new System.Drawing.Point(6, 27);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(55, 15);
             this.label2.TabIndex = 4;
@@ -367,7 +395,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(265, 198);
+            this.label1.Location = new System.Drawing.Point(265, 180);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(23, 15);
             this.label1.TabIndex = 3;
@@ -375,7 +403,7 @@
             // 
             // textBox_AlignBottom
             // 
-            this.textBox_AlignBottom.Location = new System.Drawing.Point(194, 194);
+            this.textBox_AlignBottom.Location = new System.Drawing.Point(194, 176);
             this.textBox_AlignBottom.MaxLength = 5;
             this.textBox_AlignBottom.Name = "textBox_AlignBottom";
             this.textBox_AlignBottom.Size = new System.Drawing.Size(65, 23);
@@ -386,7 +414,7 @@
             // checkBox_AlignBottom
             // 
             this.checkBox_AlignBottom.AutoSize = true;
-            this.checkBox_AlignBottom.Location = new System.Drawing.Point(66, 196);
+            this.checkBox_AlignBottom.Location = new System.Drawing.Point(66, 178);
             this.checkBox_AlignBottom.Name = "checkBox_AlignBottom";
             this.checkBox_AlignBottom.Size = new System.Drawing.Size(86, 19);
             this.checkBox_AlignBottom.TabIndex = 1;
@@ -479,6 +507,15 @@
             this.columnHeader_Path.Text = "パス";
             this.columnHeader_Path.Width = 0;
             // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(66, 306);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(131, 15);
+            this.label9.TabIndex = 31;
+            this.label9.Text = "透明判定アルファ しきい値";
+            // 
             // Form1
             // 
             this.AllowDrop = true;
@@ -499,6 +536,7 @@
             this.DragEnter += new System.Windows.Forms.DragEventHandler(this.Form1_DragEnter);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar_ThuresholdAlpha)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Before)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_After)).EndInit();
             this.ResumeLayout(false);
@@ -547,5 +585,8 @@
         private Label label_AlignTopOrder;
         private Button button_ExecClear;
         private ColumnHeader columnHeader_State;
+        private TrackBar trackBar_ThuresholdAlpha;
+        private TextBox textBox_ThuresholdAlpha;
+        private Label label9;
     }
 }

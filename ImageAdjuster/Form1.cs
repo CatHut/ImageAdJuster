@@ -21,6 +21,7 @@ using static System.Net.Mime.MediaTypeNames;
 using static System.Windows.Forms.ListView;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Header;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.ToolBar;
 using Image = System.Drawing.Image;
 
 namespace ImageAdjuster
@@ -101,6 +102,8 @@ namespace ImageAdjuster
 
         private void InitializeSetting()
         {
+            m_EventEnable = false;
+
             //実行順序初期化
             m_ExecOrder = new int[Enum.GetNames(typeof(EXEC_TYPE)).Length];
             for (int i = 0; i < m_ExecOrder.Length; i++)
@@ -111,6 +114,16 @@ namespace ImageAdjuster
             //保存された値を読み取り
             SetExecOrder(m_APS.Settings.m_ExecOrder);
 
+            textBox_AlignTop.Text = m_APS.Settings.m_TopAlignPix.ToString();
+            textBox_AlignBottom.Text = m_APS.Settings.m_BottomAlignPix.ToString();
+            textBox_AlignLeft.Text = m_APS.Settings.m_LeftAlignPix.ToString();
+            textBox_AlignRight.Text = m_APS.Settings.m_RightAlignPix.ToString();
+            textBox_MarginAdjust.Text = m_APS.Settings.m_MarginAdjustPix.ToString();
+
+            textBox_ThuresholdAlpha.Text = m_APS.Settings.m_ThuresholdAlpha.ToString();
+            trackBar_ThuresholdAlpha.Value = m_APS.Settings.m_ThuresholdAlpha;
+
+            m_EventEnable = true;
         }
 
         private void InitializeMember()
@@ -124,8 +137,6 @@ namespace ImageAdjuster
             m_ExecCheckBoxArr[(int)EXEC_TYPE.LEFT_ALIGN] = checkBox_AlignLeft;
             m_ExecCheckBoxArr[(int)EXEC_TYPE.RIGHT_ALIGN] = checkBox_AlignRight;
 
-
-
             m_ExecOrderLabelArr = new Label[Enum.GetNames(typeof(EXEC_TYPE)).Length];
             m_ExecOrderLabelArr[(int)EXEC_TYPE.MARGIN_ADJUST] = label_MarginAlignOrder;
             m_ExecOrderLabelArr[(int)EXEC_TYPE.FLIP_HORIZONTAL] = label_FlipHorizontalOrder;
@@ -136,6 +147,19 @@ namespace ImageAdjuster
             m_ExecOrderLabelArr[(int)EXEC_TYPE.RIGHT_ALIGN] = label_AlignRightOrder;
         }
 
+        private void SaveSetting()
+        {
+            m_APS.Settings.m_TopAlignPix = int.Parse(textBox_AlignTop.Text);
+            m_APS.Settings.m_BottomAlignPix = int.Parse(textBox_AlignBottom.Text);
+            m_APS.Settings.m_LeftAlignPix = int.Parse(textBox_AlignLeft.Text);
+            m_APS.Settings.m_RightAlignPix = int.Parse(textBox_AlignRight.Text);
+            m_APS.Settings.m_MarginAdjustPix = int.Parse(textBox_MarginAdjust.Text);
+
+            m_APS.Settings.m_ThuresholdAlpha = int.Parse(textBox_ThuresholdAlpha.Text);
+
+            m_APS.SaveData();
+
+        }
 
 
         private void SetExecOrder(int[] ExecOrder)
@@ -194,54 +218,56 @@ namespace ImageAdjuster
             //}
         }
 
-        private static Bitmap AlignBottom(Image img, int pix)
-        {
-            // 画像を読み込む
-            Bitmap bmp = new Bitmap(img);
+        //private static Bitmap AlignBottom(Image img, int pix)
+        //{
+        //    // 画像を読み込む
+        //    Bitmap bmp = new Bitmap(img);
 
-            // 画像中のイラストの位置を検出する
-            int x = 0;
-            int y = 0;
-            bool found = false;
-            for (int i = bmp.Height - 1; i >= 0; i--)
-            {
-                for (int j = 0; j < bmp.Width; j++)
-                {
-                    Color pixel = bmp.GetPixel(j, i);
-                    if (pixel.A > 0)
-                    {
-                        // イラストが見つかった
-                        x = j;
-                        y = i;
-                        found = true;
-                        break;
-                    }
-                }
+        //    // 画像中のイラストの位置を検出する
+        //    int x = 0;
+        //    int y = 0;
+        //    bool found = false;
+        //    for (int i = bmp.Height - 1; i >= 0; i--)
+        //    {
+        //        for (int j = 0; j < bmp.Width; j++)
+        //        {
+        //            Color pixel = bmp.GetPixel(j, i);
+        //            if (pixel.A > 0)
+        //            {
+        //                // イラストが見つかった
+        //                x = j;
+        //                y = i;
+        //                found = true;
+        //                break;
+        //            }
+        //        }
 
-                if (found)
-                {
-                    break;
-                }
-            }
+        //        if (found)
+        //        {
+        //            break;
+        //        }
+        //    }
 
-            // 画像を移動する
-            using (Graphics graphics = Graphics.FromImage(bmp))
-            {
-                // 一番下の位置が画像の下から10ピクセルになるように移動する
-                int newX = x;
-                int newY = y + pix;
-                graphics.DrawImage(bmp, newX, newY);
-            }
+        //    // 画像を移動する
+        //    using (Graphics graphics = Graphics.FromImage(bmp))
+        //    {
+        //        // 一番下の位置が画像の下から10ピクセルになるように移動する
+        //        int newX = x;
+        //        int newY = y + pix;
+        //        graphics.DrawImage(bmp, newX, newY);
+        //    }
 
-            return bmp;
-        }
+        //    return bmp;
+        //}
 
         private void textBox_AlignBottom_TextChanged(object sender, EventArgs e)
         {
+            if (m_EventEnable == false) { return; }
+
             var input = ValueLimit(textBox_AlignBottom.Text, 0, 1000);
             textBox_AlignBottom.Text = input.ToString();
+            SaveSetting();
             UpdatePictureBox();
-
         }
 
         private void listView_FileList_KeyDown(object sender, KeyEventArgs e)
@@ -352,8 +378,12 @@ namespace ImageAdjuster
         {
             if (listView_FileList.SelectedItems.Count != 0)
             {
+                if(listView_FileList.SelectedItems[0].SubItems.Count < 2) { return; }
+
                 var item = listView_FileList.SelectedItems[0];
                 var path = item.SubItems[(int)LISTVIEW_COLUMN_HEADER.PATH].Text;
+
+                if (!File.Exists(path)) { return; }
 
                 var img = Exec(path);
                 //SaveImage(img, path);
@@ -599,8 +629,10 @@ namespace ImageAdjuster
                 {
                     case EXEC_TYPE.MARGIN_ADJUST:
                         {
-                            var pix = int.Parse(textBox_MarginAdjust.Text);
-                            img = MarginRemove(img);
+                            var pix = m_APS.Settings.m_MarginAdjustPix;
+                            var alpha = m_APS.Settings.m_ThuresholdAlpha;
+
+                            img = MarginRemove(img, alpha);
                             img = MarginAdd(img, pix);
                         }
                         break;
@@ -621,9 +653,10 @@ namespace ImageAdjuster
 
                     case EXEC_TYPE.BOTTOM_ALIGN:
                         {
-                            var pix = int.Parse(textBox_AlignBottom.Text);
+                            var pix = m_APS.Settings.m_BottomAlignPix;
+                            var alpha = m_APS.Settings.m_ThuresholdAlpha;
 
-                            img = RemoveBottomMargin(img);
+                            img = RemoveBottomMargin(img, alpha);
                             img = AddMargin(img, DIRECTION.DOWN, pix);
 
                         }
@@ -631,9 +664,10 @@ namespace ImageAdjuster
 
                     case EXEC_TYPE.TOP_ALIGN:
                         {
-                            var pix = int.Parse(textBox_AlignTop.Text);
+                            var pix = m_APS.Settings.m_TopAlignPix;
+                            var alpha = m_APS.Settings.m_ThuresholdAlpha;
 
-                            img = RemoveTopMargin(img);
+                            img = RemoveTopMargin(img, alpha);
                             img = AddMargin(img, DIRECTION.UP, pix);
 
                         }
@@ -641,9 +675,10 @@ namespace ImageAdjuster
 
                     case EXEC_TYPE.LEFT_ALIGN:
                         {
-                            var pix = int.Parse(textBox_AlignLeft.Text);
+                            var pix = m_APS.Settings.m_LeftAlignPix;
+                            var alpha = m_APS.Settings.m_ThuresholdAlpha;
 
-                            img = RemoveLeftMargin(img);
+                            img = RemoveLeftMargin(img, alpha);
                             img = AddMargin(img, DIRECTION.LEFT, pix);
 
                         }
@@ -651,9 +686,10 @@ namespace ImageAdjuster
 
                     case EXEC_TYPE.RIGHT_ALIGN:
                         {
-                            var pix = int.Parse(textBox_AlignRight.Text);
+                            var pix = m_APS.Settings.m_RightAlignPix;
+                            var alpha = m_APS.Settings.m_ThuresholdAlpha;
 
-                            img = RemoveRightMargin(img);
+                            img = RemoveRightMargin(img, alpha);
                             img = AddMargin(img, DIRECTION.RIGHT, pix);
 
                         }
@@ -814,13 +850,13 @@ namespace ImageAdjuster
             return newImg;
         }
 
-        private Image MarginRemove(Image img)
+        private Image MarginRemove(Image img, int alpha)
         {
-            return MarginRemove((Bitmap)img);
+            return MarginRemove((Bitmap)img, alpha);
         }
 
 
-        private Image MarginRemove(Bitmap img)
+        private Image MarginRemove(Bitmap img, int alpha)
         {
             // 余白を検出するための最小値
             int minX = img.Width;
@@ -837,7 +873,7 @@ namespace ImageAdjuster
                     Color pixel = img.GetPixel(x, y);
 
                     // 透明でないピクセルの場合は、余白の境界を更新する
-                    if (pixel.A != 0)
+                    if (pixel.A > alpha)
                     {
                         if (x < minX) minX = x;
                         if (y < minY) minY = y;
@@ -846,6 +882,19 @@ namespace ImageAdjuster
                     }
                 }
             }
+
+            // minX, maxX, minY, maxY の値が正しいかチェックする
+            // 値が不正な場合は、それぞれ0を設定する
+            maxX = Math.Max(0, maxX);
+            maxY = Math.Max(0, maxY);
+            minX = Math.Min(maxX, minX);
+            minY = Math.Min(maxY, minY);
+
+            if(maxY == minY || maxX == minX)
+            {
+                return CreateErrorImage();
+            }
+
 
             // 新しいBitmapオブジェクトを作成する
             Bitmap newImg = new Bitmap(maxX - minX + 1, maxY - minY + 1);
@@ -867,18 +916,19 @@ namespace ImageAdjuster
         }
 
 
-        private Image RemoveTopMargin(Bitmap img)
+        private Image RemoveTopMargin(Bitmap img, int alpha)
         {
             // 透明な余白の上端を探す
             int top = 0;
+            bool isBlank = true;
             for (int y = 0; y < img.Height; y++)
             {
-                bool isBlank = true;
+                isBlank = true;
                 for (int x = 0; x < img.Width; x++)
                 {
                     // 各ピクセルのアルファ値を取得
                     Color pixel = img.GetPixel(x, y);
-                    if (pixel.A > 0)
+                    if (pixel.A > alpha)
                     {
                         // アルファ値が0より大きいピクセルが見つかった場合、そこが透明な余白の上端
                         isBlank = false;
@@ -891,6 +941,17 @@ namespace ImageAdjuster
                     break;
                 }
             }
+
+            //見つからなかった場合エラー回避用処理
+            if (isBlank == true)
+            {
+                return CreateErrorImage();
+            }
+
+            // 値が正しいかチェックする
+            // 値が不正な場合は、それぞれ0を設定する
+            top = Math.Max(0, top);
+            top = Math.Min(img.Height, top);
 
             // 出力画像を作成
             Bitmap outputImage = new Bitmap(img.Width, img.Height - top);
@@ -974,38 +1035,39 @@ namespace ImageAdjuster
         //}
 
 
-        private Image RemoveBottomMargin(Image img)
+        private Image RemoveBottomMargin(Image img, int alpha)
         {
-            return RemoveBottomMargin((Bitmap)img);
+            return RemoveBottomMargin((Bitmap)img, alpha);
         }
 
-        private Image RemoveTopMargin(Image img)
+        private Image RemoveTopMargin(Image img, int alpha)
         {
-            return RemoveTopMargin((Bitmap)img);
+            return RemoveTopMargin((Bitmap)img, alpha);
         }
 
-        private Image RemoveLeftMargin(Image img)
+        private Image RemoveLeftMargin(Image img, int alpha)
         {
-            return RemoveLeftMargin((Bitmap)img);
+            return RemoveLeftMargin((Bitmap)img, alpha);
         }
 
-        private Image RemoveRightMargin(Image img)
+        private Image RemoveRightMargin(Image img, int alpha)
         {
-            return RemoveRightMargin((Bitmap)img);
+            return RemoveRightMargin((Bitmap)img, alpha);
         }
 
-        private Image RemoveBottomMargin(Bitmap img)
+        private Image RemoveBottomMargin(Bitmap img, int alpha)
         {
             // 透明な余白の下端を探す
             int bottom = 0;
+            bool isBlank = true;
             for (int y = img.Height - 1; y >= 0; y--)
             {
-                bool isBlank = true;
+                isBlank = true;
                 for (int x = 0; x < img.Width; x++)
                 {
                     // 各ピクセルのアルファ値を取得
                     Color pixel = img.GetPixel(x, y);
-                    if (pixel.A > 0)
+                    if (pixel.A > alpha)
                     {
                         // アルファ値が0より大きいピクセルが見つかった場合、そこが透明な余白の下端
                         isBlank = false;
@@ -1019,6 +1081,17 @@ namespace ImageAdjuster
                 }
             }
 
+            //見つからなかった場合エラー回避用処理
+            if (isBlank == true)
+            {
+                return CreateErrorImage();
+            }
+
+            // 値が正しいかチェックする
+            // 値が不正な場合は、それぞれ0を設定する
+            bottom = Math.Max(0, bottom);
+            bottom = Math.Min(img.Height, bottom);
+
             // 出力画像を作成
             Bitmap outputImage = new Bitmap(img.Width, bottom + 1);
 
@@ -1029,18 +1102,19 @@ namespace ImageAdjuster
         }
 
 
-        private Image RemoveLeftMargin(Bitmap img)
+        private Image RemoveLeftMargin(Bitmap img, int alpha)
         {
             // 透明な余白の左端を探す
             int left = 0;
+            bool isBlank = true;
             for (int x = 0; x < img.Width; x++)
             {
-                bool isBlank = true;
+                isBlank = true;
                 for (int y = 0; y < img.Height; y++)
                 {
                     // 各ピクセルのアルファ値を取得
                     Color pixel = img.GetPixel(x, y);
-                    if (pixel.A > 0)
+                    if (pixel.A > alpha)
                     {
                         // アルファ値が0より大きいピクセルが見つかった場合、そこが透明な余白の左端
                         isBlank = false;
@@ -1054,28 +1128,41 @@ namespace ImageAdjuster
                 }
             }
 
+            //見つからなかった場合エラー回避用処理
+            if (isBlank == true)
+            {
+                return CreateErrorImage();
+            }
+
+            // 値が正しいかチェックする
+            // 値が不正な場合は、それぞれ0を設定する
+            left = Math.Max(0, left);
+            left = Math.Min(img.Width, left);
+
+
             // 出力画像を作成
             Bitmap outputImage = new Bitmap(img.Width - left, img.Height);
 
-            CopyPixel(img, left, 0, img.Width, img.Height, outputImage, 0, 0);
+            CopyPixel(img, left, 0, img.Width - left, img.Height, outputImage, 0, 0);
 
             // 出力画像を保存
             return outputImage;
         }
 
 
-        private Image RemoveRightMargin(Bitmap img)
+        private Image RemoveRightMargin(Bitmap img, int alpha)
         {
             // 透明な余白の右端を探す
             int right = 0;
+            bool isBlank = true;
             for (int x = img.Width - 1; x >= 0; x--)
             {
-                bool isBlank = true;
+                isBlank = true;
                 for (int y = 0; y < img.Height; y++)
                 {
                     // 各ピクセルのアルファ値を取得
                     Color pixel = img.GetPixel(x, y);
-                    if (pixel.A > 0)
+                    if (pixel.A > alpha)
                     {
                         // アルファ値が0より大きいピクセルが見つかった場合、そこが透明な余白の右端
                         isBlank = false;
@@ -1089,6 +1176,18 @@ namespace ImageAdjuster
                 }
             }
 
+            //見つからなかった場合エラー回避用処理
+            if (isBlank == true)
+            {
+                return CreateErrorImage();
+            }
+
+            // 値が正しいかチェックする
+            // 値が不正な場合は、それぞれ0を設定する
+            right = Math.Max(0, right);
+            right = Math.Min(img.Width, right);
+
+
             // 出力画像を作成
             Bitmap outputImage = new Bitmap(right + 1, img.Height);
 
@@ -1096,6 +1195,25 @@ namespace ImageAdjuster
 
             // 出力画像を保存
             return outputImage;
+        }
+
+
+        private Image CreateErrorImage()
+        {
+            // フォントとフォントスタイルを指定する
+            Font font = new Font("Arial", 8, FontStyle.Bold);
+
+            // Imageオブジェクトを作成する
+            Image img = new Bitmap(200, 100);
+
+            // usingステートメントを使用してGraphicsオブジェクトを作成する
+            using (Graphics g = Graphics.FromImage(img))
+            {
+                // テキストを描画する
+                g.DrawString("出力できる画像がありません" + Environment.NewLine + "アルファしきい値を見直してください", font, Brushes.Red, 10, 10);
+            }
+
+            return img;
         }
 
         private Image AddMargin(Image img, DIRECTION direction, int pix)
@@ -1145,31 +1263,43 @@ namespace ImageAdjuster
 
         private void textBox_MarginAdjust_TextChanged(object sender, EventArgs e)
         {
+            if (m_EventEnable == false) { return; }
+
             var input = ValueLimit(textBox_MarginAdjust.Text, 0, 1000);
             textBox_MarginAdjust.Text = input.ToString();
+            SaveSetting();
             UpdatePictureBox();
         }
 
         private void textBox_AlignTop_TextChanged(object sender, EventArgs e)
         {
+            if (m_EventEnable == false) { return; }
+
             var input = ValueLimit(textBox_AlignTop.Text, 0, 1000);
             textBox_AlignTop.Text = input.ToString();
+            SaveSetting();
             UpdatePictureBox();
 
         }
 
         private void textBox_AlignLeft_TextChanged(object sender, EventArgs e)
         {
+            if (m_EventEnable == false) { return; }
+
             var input = ValueLimit(textBox_AlignLeft.Text, 0, 1000);
             textBox_AlignLeft.Text = input.ToString();
+            SaveSetting();
             UpdatePictureBox();
 
         }
 
         private void textBox_AlignRight_TextChanged(object sender, EventArgs e)
         {
+            if (m_EventEnable == false) { return; }
+
             var input = ValueLimit(textBox_AlignRight.Text, 0, 1000);
             textBox_AlignRight.Text = input.ToString();
+            SaveSetting();
             UpdatePictureBox();
 
         }
@@ -1239,6 +1369,26 @@ namespace ImageAdjuster
                 Debug.WriteLine(i.ToString());
             }
             
+            UpdatePictureBox();
+        }
+
+        private void textBox_ThuresholdAlpha_TextChanged(object sender, EventArgs e)
+        {
+            if (m_EventEnable == false) { return; }
+
+            var input = ValueLimit(textBox_ThuresholdAlpha.Text, 0, 255);
+            textBox_ThuresholdAlpha.Text = input.ToString();
+            trackBar_ThuresholdAlpha.Value = input;
+            SaveSetting();
+            UpdatePictureBox();
+        }
+
+        private void trackBar_ThuresholdAlpha_ValueChanged(object sender, EventArgs e)
+        {
+            if (m_EventEnable == false) { return; }
+
+            textBox_ThuresholdAlpha.Text = trackBar_ThuresholdAlpha.Value.ToString();
+            SaveSetting();
             UpdatePictureBox();
         }
     }
