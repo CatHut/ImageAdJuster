@@ -402,11 +402,11 @@ namespace ImageAdjuster
 
         private void UpdatePictureBox()
         {
-            if (listView_FileList.SelectedItems.Count != 0)
+            if (listView_FileList.FocusedItem != null)
             {
-                if(listView_FileList.SelectedItems[0].SubItems.Count < 2) { return; }
+                if(listView_FileList.FocusedItem.SubItems.Count < 2) { return; }
 
-                var item = listView_FileList.SelectedItems[0];
+                var item = listView_FileList.FocusedItem;
                 var path = item.SubItems[(int)LISTVIEW_COLUMN_HEADER.PATH].Text;
                 var file = item.SubItems[(int)LISTVIEW_COLUMN_HEADER.FILE].Text;
 
@@ -1425,8 +1425,30 @@ namespace ImageAdjuster
             {
                 Debug.WriteLine(i.ToString());
             }
-            
-            UpdatePictureBox();
+
+            if ((Control.ModifierKeys & Keys.Control) == Keys.Control)
+            {
+                if (listView_FileList.FocusedItem != null)
+                {
+                    if(listView_FileList.FocusedItem.Selected == true)
+                    {
+                        UpdatePictureBox();
+                    }
+                    else
+                    {
+                        if (listView_FileList.SelectedItems.Count > 0)
+                        {
+                            var idx = listView_FileList.SelectedItems[0].Index;
+                            UpdatePictureBox(idx);
+                        }
+                    }
+
+                }
+            }
+            else
+            {
+                UpdatePictureBox();
+            }
         }
 
         private void textBox_ThuresholdAlpha_TextChanged(object sender, EventArgs e)
