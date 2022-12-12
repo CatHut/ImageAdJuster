@@ -22,8 +22,10 @@ using static System.Net.Mime.MediaTypeNames;
 using static System.Windows.Forms.ListView;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Header;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.ToolBar;
 using Image = System.Drawing.Image;
+using TextBox = System.Windows.Forms.TextBox;
 
 namespace ImageAdjuster
 {
@@ -76,6 +78,7 @@ namespace ImageAdjuster
         private int[] m_ExecOrder;
         private CheckBox[] m_ExecCheckBoxArr;
         private Label[] m_ExecOrderLabelArr;
+        private TextBox[] m_ParamTextBoxArr;
         private AppSetting m_APS;
         private Dictionary<LISTVIEW_STATE, string> m_StateDic = new Dictionary<LISTVIEW_STATE, string>()
         {
@@ -154,6 +157,17 @@ namespace ImageAdjuster
             m_ExecOrderLabelArr[(int)EXEC_TYPE.RIGHT_ALIGN] = label_AlignRightOrder;
             m_ExecOrderLabelArr[(int)EXEC_TYPE.RESIZE_HORIZONTAL] = label_ResizeHorizontal;
             m_ExecOrderLabelArr[(int)EXEC_TYPE.RESIZE_VIRTICAL] = label_ResizeVirtical;
+
+            m_ParamTextBoxArr = new TextBox[Enum.GetNames(typeof(EXEC_TYPE)).Length];
+            m_ParamTextBoxArr[(int)EXEC_TYPE.MARGIN_ADJUST] = textBox_MarginAdjust;
+            m_ParamTextBoxArr[(int)EXEC_TYPE.TOP_ALIGN] = textBox_AlignTop;
+            m_ParamTextBoxArr[(int)EXEC_TYPE.BOTTOM_ALIGN] = textBox_AlignBottom;
+            m_ParamTextBoxArr[(int)EXEC_TYPE.LEFT_ALIGN] = textBox_AlignLeft;
+            m_ParamTextBoxArr[(int)EXEC_TYPE.RIGHT_ALIGN] = textBox_AlignRight;
+            m_ParamTextBoxArr[(int)EXEC_TYPE.RESIZE_HORIZONTAL] = textBox_ResizeHorizontal;
+            m_ParamTextBoxArr[(int)EXEC_TYPE.RESIZE_VIRTICAL] = textBox_ResizeVirtical;
+
+
         }
 
         private void SaveSetting()
@@ -184,6 +198,31 @@ namespace ImageAdjuster
 
         }
 
+        private void ControlSetEnable(bool enable)
+        {
+            foreach(var item in m_ExecCheckBoxArr)
+            {
+                if(item != null)
+                {
+                    item.Enabled = enable;
+                }
+            }
+
+            foreach (var item in m_ParamTextBoxArr)
+            {
+                if (item != null)
+                {
+                    item.Enabled = enable;
+                }
+            }
+
+            trackBar_ThuresholdAlpha.Enabled = enable;
+            textBox_ThuresholdAlpha.Enabled = enable;
+            button_ExecClear.Enabled = enable;
+            button_StateReset.Enabled = enable;
+            //listView_FileList.Enabled = enable;
+
+        }
 
 
 
@@ -470,7 +509,8 @@ namespace ImageAdjuster
             if(m_EventEnable == false) { return; }
 
             m_EventEnable = false;
-
+            ControlSetEnable(false);
+            button_SelectedExec.Enabled = false;
             button_Exec.Text = "キャンセル";
 
             m_Exec = true;
@@ -479,8 +519,10 @@ namespace ImageAdjuster
             await Task.Run(() => ExecAdjust());
 
             m_Exec = false;
+            button_SelectedExec.Enabled = true;
+            ControlSetEnable(true);
             m_EventEnable = true;
-            button_Exec.Text = "実行";
+            button_Exec.Text = "一括実行";
 
             label_Status.Text = "何もしてないよ";
             label_Progress.Text = "";
@@ -547,6 +589,48 @@ namespace ImageAdjuster
             }
         }
 
+
+        private void SelectedExecAdjust()
+        {
+            HashSet<string> pathList = new HashSet<string>();
+
+            Invoke((MethodInvoker)delegate
+            {
+                foreach (ListViewItem item in listView_FileList.SelectedItems)
+                {
+                    if (item.SubItems.Count < 2) { continue; }
+                    pathList.Add(item.SubItems[(int)LISTVIEW_COLUMN_HEADER.PATH].Text);
+                }
+            });
+
+            int i = 1;
+            foreach (var path in pathList)
+            {
+
+                if (m_Exec == false) { break; }
+
+                if (GetListViewState(path) == m_StateDic[LISTVIEW_STATE.COMPLETED]) { continue; }
+
+                if (!File.Exists(path)) { continue; }
+
+                SetListViewState(path, LISTVIEW_STATE.WORKING);
+
+                Invoke((MethodInvoker)delegate
+                {
+                    label_Status.Text = " 処理中:" + Path.GetFileName(path);
+                    label_Progress.Text = i.ToString().PadLeft(5, ' ') + "/" + pathList.Count.ToString().PadLeft(5, ' ');
+                });
+
+                var img = Exec(path);
+                SaveImage(img, path);
+
+                SetListViewState(path, LISTVIEW_STATE.COMPLETED);
+
+                i++;
+
+            }
+        }
+
         private void SetListViewState(string path, LISTVIEW_STATE state) 
         {
             Invoke((MethodInvoker)delegate
@@ -556,6 +640,20 @@ namespace ImageAdjuster
                     if (item.SubItems[(int)LISTVIEW_COLUMN_HEADER.PATH].Text == path)
                     {
                         item.SubItems[(int)LISTVIEW_COLUMN_HEADER.STATE].Text = m_StateDic[state];
+                        if (state == LISTVIEW_STATE.COMPLETED)
+                        {
+                            listView_FileList.EnsureVisible(item.Index);
+                            //item.UseItemStyleForSubItems = false;
+                            //item.SubItems[(int)LISTVIEW_COLUMN_HEADER.STATE].BackColor = Color.Gray;
+                            //item.BackColor = Color.Gray;
+                        }
+                        else if(state == LISTVIEW_STATE.WAIT)
+                        {
+                            //item.UseItemStyleForSubItems = false;
+                            //item.SubItems[(int)LISTVIEW_COLUMN_HEADER.STATE].BackColor = Color.White;
+                            //item.BackColor = Color.White;
+                        }
+
                         break;
                     }
                 }
@@ -1239,7 +1337,7 @@ namespace ImageAdjuster
             Bitmap canvas = new Bitmap(width, height);
             using (Graphics g = Graphics.FromImage(canvas))
             {
-                g.InterpolationMode = InterpolationMode.Default;
+                g.InterpolationMode = InterpolationMode.HighQualityBicubic;
                 g.DrawImage(img, 0, 0, width, height);
             }
             return canvas;
@@ -1691,6 +1789,36 @@ namespace ImageAdjuster
 
             CheckBoxCheckedChanged(EXEC_TYPE.RESIZE_VIRTICAL);
             UpdatePictureBox();
+        }
+
+        private async void button_SelectedExec_Click(object sender, EventArgs e)
+        {
+            if (m_Exec == true)
+            {
+                m_Exec = false;
+                return;
+            }
+
+            if (m_EventEnable == false) { return; }
+
+            m_EventEnable = false;
+            ControlSetEnable(false);
+            button_Exec.Enabled = false;
+            button_SelectedExec.Text = "キャンセル";
+
+            m_Exec = true;
+
+            // 非同期でFuncAを実行する
+            await Task.Run(() => SelectedExecAdjust());
+
+            m_Exec = false;
+            button_Exec.Enabled = true;
+            ControlSetEnable(true);
+            m_EventEnable = true;
+            button_SelectedExec.Text = "選択実行";
+
+            label_Status.Text = "何もしてないよ";
+            label_Progress.Text = "";
         }
     }
 }

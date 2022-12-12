@@ -32,6 +32,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.checkBox_FlipHorizontal = new System.Windows.Forms.CheckBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.button_SelectedExec = new System.Windows.Forms.Button();
             this.label_ResizeVirtical = new System.Windows.Forms.Label();
             this.label_ResizeHorizontal = new System.Windows.Forms.Label();
             this.label14 = new System.Windows.Forms.Label();
@@ -106,6 +107,9 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.label_Status);
+            this.groupBox1.Controls.Add(this.label8);
+            this.groupBox1.Controls.Add(this.button_SelectedExec);
             this.groupBox1.Controls.Add(this.label_ResizeVirtical);
             this.groupBox1.Controls.Add(this.label_ResizeHorizontal);
             this.groupBox1.Controls.Add(this.label14);
@@ -134,8 +138,6 @@
             this.groupBox1.Controls.Add(this.label_AlignBottomOrder);
             this.groupBox1.Controls.Add(this.label_MarginAlignOrder);
             this.groupBox1.Controls.Add(this.label_FlipVirticalOrder);
-            this.groupBox1.Controls.Add(this.label_Status);
-            this.groupBox1.Controls.Add(this.label8);
             this.groupBox1.Controls.Add(this.button_Exec);
             this.groupBox1.Controls.Add(this.checkBox_FlipVirtical);
             this.groupBox1.Controls.Add(this.label6);
@@ -153,6 +155,16 @@
             this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "操作";
+            // 
+            // button_SelectedExec
+            // 
+            this.button_SelectedExec.Location = new System.Drawing.Point(94, 466);
+            this.button_SelectedExec.Name = "button_SelectedExec";
+            this.button_SelectedExec.Size = new System.Drawing.Size(94, 31);
+            this.button_SelectedExec.TabIndex = 41;
+            this.button_SelectedExec.Text = "選択実行";
+            this.button_SelectedExec.UseVisualStyleBackColor = true;
+            this.button_SelectedExec.Click += new System.EventHandler(this.button_SelectedExec_Click);
             // 
             // label_ResizeVirtical
             // 
@@ -234,7 +246,7 @@
             // 
             // label_Progress
             // 
-            this.label_Progress.Location = new System.Drawing.Point(78, 466);
+            this.label_Progress.Location = new System.Drawing.Point(78, 451);
             this.label_Progress.Name = "label_Progress";
             this.label_Progress.Size = new System.Drawing.Size(74, 15);
             this.label_Progress.TabIndex = 32;
@@ -242,7 +254,7 @@
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(66, 382);
+            this.label9.Location = new System.Drawing.Point(66, 377);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(131, 15);
             this.label9.TabIndex = 31;
@@ -251,7 +263,7 @@
             // trackBar_ThuresholdAlpha
             // 
             this.trackBar_ThuresholdAlpha.LargeChange = 1;
-            this.trackBar_ThuresholdAlpha.Location = new System.Drawing.Point(6, 400);
+            this.trackBar_ThuresholdAlpha.Location = new System.Drawing.Point(6, 395);
             this.trackBar_ThuresholdAlpha.Maximum = 255;
             this.trackBar_ThuresholdAlpha.Name = "trackBar_ThuresholdAlpha";
             this.trackBar_ThuresholdAlpha.Size = new System.Drawing.Size(182, 45);
@@ -261,7 +273,7 @@
             // 
             // textBox_ThuresholdAlpha
             // 
-            this.textBox_ThuresholdAlpha.Location = new System.Drawing.Point(194, 400);
+            this.textBox_ThuresholdAlpha.Location = new System.Drawing.Point(194, 395);
             this.textBox_ThuresholdAlpha.MaxLength = 5;
             this.textBox_ThuresholdAlpha.Name = "textBox_ThuresholdAlpha";
             this.textBox_ThuresholdAlpha.Size = new System.Drawing.Size(65, 23);
@@ -426,7 +438,7 @@
             // label_Status
             // 
             this.label_Status.AutoSize = true;
-            this.label_Status.Location = new System.Drawing.Point(78, 448);
+            this.label_Status.Location = new System.Drawing.Point(78, 433);
             this.label_Status.Name = "label_Status";
             this.label_Status.Size = new System.Drawing.Size(74, 15);
             this.label_Status.TabIndex = 12;
@@ -435,7 +447,7 @@
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(10, 448);
+            this.label8.Location = new System.Drawing.Point(10, 433);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(51, 15);
             this.label8.TabIndex = 11;
@@ -447,7 +459,7 @@
             this.button_Exec.Name = "button_Exec";
             this.button_Exec.Size = new System.Drawing.Size(94, 31);
             this.button_Exec.TabIndex = 10;
-            this.button_Exec.Text = "実行";
+            this.button_Exec.Text = "一括実行";
             this.button_Exec.UseVisualStyleBackColor = true;
             this.button_Exec.Click += new System.EventHandler(this.button_Exec_Click);
             // 
@@ -771,5 +783,6 @@
         private TextBox textBox_ResizeHorizontal;
         private CheckBox checkBox_ResizeHorizontal;
         private Button button_StateReset;
+        private Button button_SelectedExec;
     }
 }
