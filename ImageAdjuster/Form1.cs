@@ -1475,5 +1475,10 @@ namespace ImageAdjuster
         {
             m_APS.Exit();
         }
+
+        private void button_StateReset_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

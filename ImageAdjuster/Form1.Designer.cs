@@ -78,6 +78,15 @@
             this.label_BeforeSize = new System.Windows.Forms.Label();
             this.label_AfterSizeTitle = new System.Windows.Forms.Label();
             this.label_AfterSize = new System.Windows.Forms.Label();
+            this.label_ResizeVirtical = new System.Windows.Forms.Label();
+            this.label_ResizeHorizontal = new System.Windows.Forms.Label();
+            this.label14 = new System.Windows.Forms.Label();
+            this.textBox_ResizeVirtical = new System.Windows.Forms.TextBox();
+            this.checkBox_ResizeVirtical = new System.Windows.Forms.CheckBox();
+            this.label15 = new System.Windows.Forms.Label();
+            this.textBox_ResizeHorizontal = new System.Windows.Forms.TextBox();
+            this.checkBox_ResizeHorizontal = new System.Windows.Forms.CheckBox();
+            this.button_StateReset = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar_ThuresholdAlpha)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Before)).BeginInit();
@@ -97,6 +106,14 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.label_ResizeVirtical);
+            this.groupBox1.Controls.Add(this.label_ResizeHorizontal);
+            this.groupBox1.Controls.Add(this.label14);
+            this.groupBox1.Controls.Add(this.textBox_ResizeVirtical);
+            this.groupBox1.Controls.Add(this.checkBox_ResizeVirtical);
+            this.groupBox1.Controls.Add(this.label15);
+            this.groupBox1.Controls.Add(this.textBox_ResizeHorizontal);
+            this.groupBox1.Controls.Add(this.checkBox_ResizeHorizontal);
             this.groupBox1.Controls.Add(this.label_Progress);
             this.groupBox1.Controls.Add(this.label9);
             this.groupBox1.Controls.Add(this.trackBar_ThuresholdAlpha);
@@ -132,14 +149,14 @@
             this.groupBox1.Controls.Add(this.checkBox_FlipHorizontal);
             this.groupBox1.Location = new System.Drawing.Point(12, 12);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(310, 427);
+            this.groupBox1.Size = new System.Drawing.Size(310, 506);
             this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "操作";
             // 
             // label_Progress
             // 
-            this.label_Progress.Location = new System.Drawing.Point(78, 390);
+            this.label_Progress.Location = new System.Drawing.Point(78, 466);
             this.label_Progress.Name = "label_Progress";
             this.label_Progress.Size = new System.Drawing.Size(74, 15);
             this.label_Progress.TabIndex = 32;
@@ -147,7 +164,7 @@
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(66, 306);
+            this.label9.Location = new System.Drawing.Point(66, 382);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(131, 15);
             this.label9.TabIndex = 31;
@@ -156,7 +173,7 @@
             // trackBar_ThuresholdAlpha
             // 
             this.trackBar_ThuresholdAlpha.LargeChange = 1;
-            this.trackBar_ThuresholdAlpha.Location = new System.Drawing.Point(6, 324);
+            this.trackBar_ThuresholdAlpha.Location = new System.Drawing.Point(6, 400);
             this.trackBar_ThuresholdAlpha.Maximum = 255;
             this.trackBar_ThuresholdAlpha.Name = "trackBar_ThuresholdAlpha";
             this.trackBar_ThuresholdAlpha.Size = new System.Drawing.Size(182, 45);
@@ -166,7 +183,7 @@
             // 
             // textBox_ThuresholdAlpha
             // 
-            this.textBox_ThuresholdAlpha.Location = new System.Drawing.Point(194, 324);
+            this.textBox_ThuresholdAlpha.Location = new System.Drawing.Point(194, 400);
             this.textBox_ThuresholdAlpha.MaxLength = 5;
             this.textBox_ThuresholdAlpha.Name = "textBox_ThuresholdAlpha";
             this.textBox_ThuresholdAlpha.Size = new System.Drawing.Size(65, 23);
@@ -176,7 +193,7 @@
             // 
             // button_ExecClear
             // 
-            this.button_ExecClear.Location = new System.Drawing.Point(65, 267);
+            this.button_ExecClear.Location = new System.Drawing.Point(65, 341);
             this.button_ExecClear.Name = "button_ExecClear";
             this.button_ExecClear.Size = new System.Drawing.Size(75, 23);
             this.button_ExecClear.TabIndex = 28;
@@ -331,7 +348,7 @@
             // label_Status
             // 
             this.label_Status.AutoSize = true;
-            this.label_Status.Location = new System.Drawing.Point(78, 372);
+            this.label_Status.Location = new System.Drawing.Point(78, 448);
             this.label_Status.Name = "label_Status";
             this.label_Status.Size = new System.Drawing.Size(74, 15);
             this.label_Status.TabIndex = 12;
@@ -340,7 +357,7 @@
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(10, 372);
+            this.label8.Location = new System.Drawing.Point(10, 448);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(51, 15);
             this.label8.TabIndex = 11;
@@ -348,7 +365,7 @@
             // 
             // button_Exec
             // 
-            this.button_Exec.Location = new System.Drawing.Point(194, 390);
+            this.button_Exec.Location = new System.Drawing.Point(194, 466);
             this.button_Exec.Name = "button_Exec";
             this.button_Exec.Size = new System.Drawing.Size(94, 31);
             this.button_Exec.TabIndex = 10;
@@ -484,7 +501,7 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(341, 21);
+            this.label7.Location = new System.Drawing.Point(341, 12);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(66, 15);
             this.label7.TabIndex = 10;
@@ -503,7 +520,7 @@
             listViewItem1});
             this.listView_FileList.Location = new System.Drawing.Point(341, 39);
             this.listView_FileList.Name = "listView_FileList";
-            this.listView_FileList.Size = new System.Drawing.Size(280, 400);
+            this.listView_FileList.Size = new System.Drawing.Size(280, 479);
             this.listView_FileList.TabIndex = 11;
             this.listView_FileList.UseCompatibleStateImageBehavior = false;
             this.listView_FileList.View = System.Windows.Forms.View.Details;
@@ -572,12 +589,97 @@
             this.label_AfterSize.Size = new System.Drawing.Size(0, 15);
             this.label_AfterSize.TabIndex = 16;
             // 
+            // label_ResizeVirtical
+            // 
+            this.label_ResizeVirtical.AutoSize = true;
+            this.label_ResizeVirtical.Location = new System.Drawing.Point(26, 308);
+            this.label_ResizeVirtical.Name = "label_ResizeVirtical";
+            this.label_ResizeVirtical.Size = new System.Drawing.Size(13, 15);
+            this.label_ResizeVirtical.TabIndex = 40;
+            this.label_ResizeVirtical.Text = "1";
+            // 
+            // label_ResizeHorizontal
+            // 
+            this.label_ResizeHorizontal.AutoSize = true;
+            this.label_ResizeHorizontal.Location = new System.Drawing.Point(26, 276);
+            this.label_ResizeHorizontal.Name = "label_ResizeHorizontal";
+            this.label_ResizeHorizontal.Size = new System.Drawing.Size(13, 15);
+            this.label_ResizeHorizontal.TabIndex = 39;
+            this.label_ResizeHorizontal.Text = "1";
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(265, 308);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(23, 15);
+            this.label14.TabIndex = 38;
+            this.label14.Text = "pix";
+            // 
+            // textBox_ResizeVirtical
+            // 
+            this.textBox_ResizeVirtical.Location = new System.Drawing.Point(194, 304);
+            this.textBox_ResizeVirtical.MaxLength = 5;
+            this.textBox_ResizeVirtical.Name = "textBox_ResizeVirtical";
+            this.textBox_ResizeVirtical.Size = new System.Drawing.Size(65, 23);
+            this.textBox_ResizeVirtical.TabIndex = 37;
+            this.textBox_ResizeVirtical.Text = "10";
+            // 
+            // checkBox_ResizeVirtical
+            // 
+            this.checkBox_ResizeVirtical.AutoSize = true;
+            this.checkBox_ResizeVirtical.Location = new System.Drawing.Point(66, 306);
+            this.checkBox_ResizeVirtical.Name = "checkBox_ResizeVirtical";
+            this.checkBox_ResizeVirtical.Size = new System.Drawing.Size(98, 19);
+            this.checkBox_ResizeVirtical.TabIndex = 36;
+            this.checkBox_ResizeVirtical.Text = "リサイズ縦指定";
+            this.checkBox_ResizeVirtical.UseVisualStyleBackColor = true;
+            // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.Location = new System.Drawing.Point(265, 276);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(23, 15);
+            this.label15.TabIndex = 35;
+            this.label15.Text = "pix";
+            // 
+            // textBox_ResizeHorizontal
+            // 
+            this.textBox_ResizeHorizontal.Location = new System.Drawing.Point(194, 272);
+            this.textBox_ResizeHorizontal.MaxLength = 5;
+            this.textBox_ResizeHorizontal.Name = "textBox_ResizeHorizontal";
+            this.textBox_ResizeHorizontal.Size = new System.Drawing.Size(65, 23);
+            this.textBox_ResizeHorizontal.TabIndex = 34;
+            this.textBox_ResizeHorizontal.Text = "10";
+            // 
+            // checkBox_ResizeHorizontal
+            // 
+            this.checkBox_ResizeHorizontal.AutoSize = true;
+            this.checkBox_ResizeHorizontal.Location = new System.Drawing.Point(66, 274);
+            this.checkBox_ResizeHorizontal.Name = "checkBox_ResizeHorizontal";
+            this.checkBox_ResizeHorizontal.Size = new System.Drawing.Size(98, 19);
+            this.checkBox_ResizeHorizontal.TabIndex = 33;
+            this.checkBox_ResizeHorizontal.Text = "リサイズ横指定";
+            this.checkBox_ResizeHorizontal.UseVisualStyleBackColor = true;
+            // 
+            // button_StateReset
+            // 
+            this.button_StateReset.Location = new System.Drawing.Point(514, 10);
+            this.button_StateReset.Name = "button_StateReset";
+            this.button_StateReset.Size = new System.Drawing.Size(107, 26);
+            this.button_StateReset.TabIndex = 41;
+            this.button_StateReset.Text = "処理済リセット";
+            this.button_StateReset.UseVisualStyleBackColor = true;
+            this.button_StateReset.Click += new System.EventHandler(this.button_StateReset_Click);
+            // 
             // Form1
             // 
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1484, 451);
+            this.ClientSize = new System.Drawing.Size(1484, 530);
+            this.Controls.Add(this.button_StateReset);
             this.Controls.Add(this.label_AfterSize);
             this.Controls.Add(this.label_AfterSizeTitle);
             this.Controls.Add(this.label_BeforeSize);
@@ -656,5 +758,14 @@
         private Label label_BeforeSize;
         private Label label_AfterSizeTitle;
         private Label label_AfterSize;
+        private Label label_ResizeVirtical;
+        private Label label_ResizeHorizontal;
+        private Label label14;
+        private TextBox textBox_ResizeVirtical;
+        private CheckBox checkBox_ResizeVirtical;
+        private Label label15;
+        private TextBox textBox_ResizeHorizontal;
+        private CheckBox checkBox_ResizeHorizontal;
+        private Button button_StateReset;
     }
 }
