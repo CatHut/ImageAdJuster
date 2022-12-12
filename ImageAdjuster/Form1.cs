@@ -425,13 +425,12 @@ namespace ImageAdjuster
 
                 var img = Exec(path);
                 //SaveImage(img, path);
+                var imgBefore = CreateImage(path);
 
-                pictureBox_Before.Image = AdjustImage(pictureBox_Before, CreateImage(path));
+                pictureBox_Before.Image = AdjustImage(pictureBox_Before, imgBefore);
                 pictureBox_After.Image = AdjustImage(pictureBox_After, img);
-
-                label_BeforeSize.Text = pictureBox_Before.Image.Width.ToString() + " ✕ " + pictureBox_Before.Image.Height.ToString();
+                label_BeforeSize.Text = imgBefore.Width.ToString() + " ✕ " + imgBefore.Height.ToString();
                 label_AfterSize.Text = img.Width.ToString() + " ✕ " + img.Height.ToString();
-
                 label_FileName.Text = file;
 
             }
@@ -449,11 +448,11 @@ namespace ImageAdjuster
 
             var img = Exec(path);
             //SaveImage(img, path);
+            var imgBefore = CreateImage(path);
 
-
-            pictureBox_Before.Image = AdjustImage(pictureBox_Before, CreateImage(path));
+            pictureBox_Before.Image = AdjustImage(pictureBox_Before, imgBefore);
             pictureBox_After.Image = AdjustImage(pictureBox_After, img);
-            label_BeforeSize.Text = pictureBox_Before.Image.Width.ToString() + " ✕ " + pictureBox_Before.Image.Height.ToString();
+            label_BeforeSize.Text = imgBefore.Width.ToString() + " ✕ " + imgBefore.Height.ToString();
             label_AfterSize.Text = img.Width.ToString() + " ✕ " + img.Height.ToString();
             label_FileName.Text = file;
 
@@ -1213,6 +1212,12 @@ namespace ImageAdjuster
         private Image ResizeHorizontal(Image img, int width)
         {
             int height = width * img.Height / img.Width;
+
+            if (width < 1 || height < 1)
+            {
+                return CreateErrorImage();
+            }
+
             Bitmap canvas = new Bitmap(width, height);
             using (Graphics g = Graphics.FromImage(canvas))
             {
@@ -1225,6 +1230,12 @@ namespace ImageAdjuster
         private Image ResizeVertical(Image img, int height)
         {
             int width = height * img.Width / img.Height;
+
+            if(width < 1 || height < 1)
+            {
+                return CreateErrorImage();
+            }
+
             Bitmap canvas = new Bitmap(width, height);
             using (Graphics g = Graphics.FromImage(canvas))
             {
@@ -1602,7 +1613,24 @@ namespace ImageAdjuster
 
         private void button_StateReset_Click(object sender, EventArgs e)
         {
+            if (m_EventEnable == false) { return; }
 
+            //処理済みをリセット
+            {
+                m_EventEnable = false;
+                var pathList = new HashSet<String>();
+                foreach (ListViewItem item in listView_FileList.Items)
+                {
+                    if (item.SubItems.Count < 2) { continue; }
+                    pathList.Add(item.SubItems[(int)LISTVIEW_COLUMN_HEADER.PATH].Text);
+                }
+
+                foreach (var path in pathList)
+                {
+                    SetListViewState(path, LISTVIEW_STATE.WAIT);
+                }
+                m_EventEnable = true;
+            }
         }
 
         private void textBox_ResizeHorizontal_TextChanged(object sender, EventArgs e)
