@@ -32,6 +32,14 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.checkBox_FlipHorizontal = new System.Windows.Forms.CheckBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.label_ResizeVirtical = new System.Windows.Forms.Label();
+            this.label_ResizeHorizontal = new System.Windows.Forms.Label();
+            this.label14 = new System.Windows.Forms.Label();
+            this.textBox_ResizeVirtical = new System.Windows.Forms.TextBox();
+            this.checkBox_ResizeVirtical = new System.Windows.Forms.CheckBox();
+            this.label15 = new System.Windows.Forms.Label();
+            this.textBox_ResizeHorizontal = new System.Windows.Forms.TextBox();
+            this.checkBox_ResizeHorizontal = new System.Windows.Forms.CheckBox();
             this.label_Progress = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
             this.trackBar_ThuresholdAlpha = new System.Windows.Forms.TrackBar();
@@ -78,14 +86,6 @@
             this.label_BeforeSize = new System.Windows.Forms.Label();
             this.label_AfterSizeTitle = new System.Windows.Forms.Label();
             this.label_AfterSize = new System.Windows.Forms.Label();
-            this.label_ResizeVirtical = new System.Windows.Forms.Label();
-            this.label_ResizeHorizontal = new System.Windows.Forms.Label();
-            this.label14 = new System.Windows.Forms.Label();
-            this.textBox_ResizeVirtical = new System.Windows.Forms.TextBox();
-            this.checkBox_ResizeVirtical = new System.Windows.Forms.CheckBox();
-            this.label15 = new System.Windows.Forms.Label();
-            this.textBox_ResizeHorizontal = new System.Windows.Forms.TextBox();
-            this.checkBox_ResizeHorizontal = new System.Windows.Forms.CheckBox();
             this.button_StateReset = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar_ThuresholdAlpha)).BeginInit();
@@ -153,6 +153,84 @@
             this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "操作";
+            // 
+            // label_ResizeVirtical
+            // 
+            this.label_ResizeVirtical.AutoSize = true;
+            this.label_ResizeVirtical.Location = new System.Drawing.Point(26, 308);
+            this.label_ResizeVirtical.Name = "label_ResizeVirtical";
+            this.label_ResizeVirtical.Size = new System.Drawing.Size(13, 15);
+            this.label_ResizeVirtical.TabIndex = 40;
+            this.label_ResizeVirtical.Text = "1";
+            // 
+            // label_ResizeHorizontal
+            // 
+            this.label_ResizeHorizontal.AutoSize = true;
+            this.label_ResizeHorizontal.Location = new System.Drawing.Point(26, 276);
+            this.label_ResizeHorizontal.Name = "label_ResizeHorizontal";
+            this.label_ResizeHorizontal.Size = new System.Drawing.Size(13, 15);
+            this.label_ResizeHorizontal.TabIndex = 39;
+            this.label_ResizeHorizontal.Text = "1";
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(265, 308);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(23, 15);
+            this.label14.TabIndex = 38;
+            this.label14.Text = "pix";
+            // 
+            // textBox_ResizeVirtical
+            // 
+            this.textBox_ResizeVirtical.Location = new System.Drawing.Point(194, 304);
+            this.textBox_ResizeVirtical.MaxLength = 5;
+            this.textBox_ResizeVirtical.Name = "textBox_ResizeVirtical";
+            this.textBox_ResizeVirtical.Size = new System.Drawing.Size(65, 23);
+            this.textBox_ResizeVirtical.TabIndex = 37;
+            this.textBox_ResizeVirtical.Text = "10";
+            this.textBox_ResizeVirtical.TextChanged += new System.EventHandler(this.textBox_ResizeVirtical_TextChanged);
+            // 
+            // checkBox_ResizeVirtical
+            // 
+            this.checkBox_ResizeVirtical.AutoSize = true;
+            this.checkBox_ResizeVirtical.Location = new System.Drawing.Point(66, 306);
+            this.checkBox_ResizeVirtical.Name = "checkBox_ResizeVirtical";
+            this.checkBox_ResizeVirtical.Size = new System.Drawing.Size(98, 19);
+            this.checkBox_ResizeVirtical.TabIndex = 36;
+            this.checkBox_ResizeVirtical.Text = "リサイズ縦指定";
+            this.checkBox_ResizeVirtical.UseVisualStyleBackColor = true;
+            this.checkBox_ResizeVirtical.CheckedChanged += new System.EventHandler(this.checkBox_ResizeVirtical_CheckedChanged);
+            // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.Location = new System.Drawing.Point(265, 276);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(23, 15);
+            this.label15.TabIndex = 35;
+            this.label15.Text = "pix";
+            // 
+            // textBox_ResizeHorizontal
+            // 
+            this.textBox_ResizeHorizontal.Location = new System.Drawing.Point(194, 272);
+            this.textBox_ResizeHorizontal.MaxLength = 5;
+            this.textBox_ResizeHorizontal.Name = "textBox_ResizeHorizontal";
+            this.textBox_ResizeHorizontal.Size = new System.Drawing.Size(65, 23);
+            this.textBox_ResizeHorizontal.TabIndex = 34;
+            this.textBox_ResizeHorizontal.Text = "10";
+            this.textBox_ResizeHorizontal.TextChanged += new System.EventHandler(this.textBox_ResizeHorizontal_TextChanged);
+            // 
+            // checkBox_ResizeHorizontal
+            // 
+            this.checkBox_ResizeHorizontal.AutoSize = true;
+            this.checkBox_ResizeHorizontal.Location = new System.Drawing.Point(66, 274);
+            this.checkBox_ResizeHorizontal.Name = "checkBox_ResizeHorizontal";
+            this.checkBox_ResizeHorizontal.Size = new System.Drawing.Size(98, 19);
+            this.checkBox_ResizeHorizontal.TabIndex = 33;
+            this.checkBox_ResizeHorizontal.Text = "リサイズ横指定";
+            this.checkBox_ResizeHorizontal.UseVisualStyleBackColor = true;
+            this.checkBox_ResizeHorizontal.CheckedChanged += new System.EventHandler(this.checkBox_ResizeHorizontal_CheckedChanged);
             // 
             // label_Progress
             // 
@@ -588,80 +666,6 @@
             this.label_AfterSize.Name = "label_AfterSize";
             this.label_AfterSize.Size = new System.Drawing.Size(0, 15);
             this.label_AfterSize.TabIndex = 16;
-            // 
-            // label_ResizeVirtical
-            // 
-            this.label_ResizeVirtical.AutoSize = true;
-            this.label_ResizeVirtical.Location = new System.Drawing.Point(26, 308);
-            this.label_ResizeVirtical.Name = "label_ResizeVirtical";
-            this.label_ResizeVirtical.Size = new System.Drawing.Size(13, 15);
-            this.label_ResizeVirtical.TabIndex = 40;
-            this.label_ResizeVirtical.Text = "1";
-            // 
-            // label_ResizeHorizontal
-            // 
-            this.label_ResizeHorizontal.AutoSize = true;
-            this.label_ResizeHorizontal.Location = new System.Drawing.Point(26, 276);
-            this.label_ResizeHorizontal.Name = "label_ResizeHorizontal";
-            this.label_ResizeHorizontal.Size = new System.Drawing.Size(13, 15);
-            this.label_ResizeHorizontal.TabIndex = 39;
-            this.label_ResizeHorizontal.Text = "1";
-            // 
-            // label14
-            // 
-            this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(265, 308);
-            this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(23, 15);
-            this.label14.TabIndex = 38;
-            this.label14.Text = "pix";
-            // 
-            // textBox_ResizeVirtical
-            // 
-            this.textBox_ResizeVirtical.Location = new System.Drawing.Point(194, 304);
-            this.textBox_ResizeVirtical.MaxLength = 5;
-            this.textBox_ResizeVirtical.Name = "textBox_ResizeVirtical";
-            this.textBox_ResizeVirtical.Size = new System.Drawing.Size(65, 23);
-            this.textBox_ResizeVirtical.TabIndex = 37;
-            this.textBox_ResizeVirtical.Text = "10";
-            // 
-            // checkBox_ResizeVirtical
-            // 
-            this.checkBox_ResizeVirtical.AutoSize = true;
-            this.checkBox_ResizeVirtical.Location = new System.Drawing.Point(66, 306);
-            this.checkBox_ResizeVirtical.Name = "checkBox_ResizeVirtical";
-            this.checkBox_ResizeVirtical.Size = new System.Drawing.Size(98, 19);
-            this.checkBox_ResizeVirtical.TabIndex = 36;
-            this.checkBox_ResizeVirtical.Text = "リサイズ縦指定";
-            this.checkBox_ResizeVirtical.UseVisualStyleBackColor = true;
-            // 
-            // label15
-            // 
-            this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(265, 276);
-            this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(23, 15);
-            this.label15.TabIndex = 35;
-            this.label15.Text = "pix";
-            // 
-            // textBox_ResizeHorizontal
-            // 
-            this.textBox_ResizeHorizontal.Location = new System.Drawing.Point(194, 272);
-            this.textBox_ResizeHorizontal.MaxLength = 5;
-            this.textBox_ResizeHorizontal.Name = "textBox_ResizeHorizontal";
-            this.textBox_ResizeHorizontal.Size = new System.Drawing.Size(65, 23);
-            this.textBox_ResizeHorizontal.TabIndex = 34;
-            this.textBox_ResizeHorizontal.Text = "10";
-            // 
-            // checkBox_ResizeHorizontal
-            // 
-            this.checkBox_ResizeHorizontal.AutoSize = true;
-            this.checkBox_ResizeHorizontal.Location = new System.Drawing.Point(66, 274);
-            this.checkBox_ResizeHorizontal.Name = "checkBox_ResizeHorizontal";
-            this.checkBox_ResizeHorizontal.Size = new System.Drawing.Size(98, 19);
-            this.checkBox_ResizeHorizontal.TabIndex = 33;
-            this.checkBox_ResizeHorizontal.Text = "リサイズ横指定";
-            this.checkBox_ResizeHorizontal.UseVisualStyleBackColor = true;
             // 
             // button_StateReset
             // 

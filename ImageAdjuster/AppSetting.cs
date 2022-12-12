@@ -21,6 +21,8 @@ namespace CatHut {
         public int m_LeftAlignPix { set; get; }
         public int m_RightAlignPix { set; get; }
         public int m_ThuresholdAlpha { set; get; }
+        public int m_ResizeHorizontalPix { set; get; }
+        public int m_ResizeVirticalPix { set; get; }
 
 
         //コンストラクタ（初期値指定を実装）
@@ -32,6 +34,8 @@ namespace CatHut {
             m_LeftAlignPix = 10;
             m_RightAlignPix = 10;
             m_ThuresholdAlpha = 10;
+            m_ResizeHorizontalPix = 100;
+            m_ResizeVirticalPix = 100;
         }
 
 

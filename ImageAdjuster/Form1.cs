@@ -9,6 +9,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Drawing.Printing;
 using System.Linq;
@@ -33,14 +34,16 @@ namespace ImageAdjuster
 
         enum EXEC_TYPE
         {
-            MARGIN_ADJUST = 0,
+            NONE = 0,        //処理なし
+            MARGIN_ADJUST,
             FLIP_HORIZONTAL,
             FLIP_VIRTICAL,
             TOP_ALIGN,
             BOTTOM_ALIGN,
             LEFT_ALIGN,
             RIGHT_ALIGN,
-            NONE        //処理なし
+            RESIZE_HORIZONTAL,
+            RESIZE_VIRTICAL
         }
 
         enum DIRECTION
@@ -114,11 +117,13 @@ namespace ImageAdjuster
             //保存された値を読み取り
             SetExecOrder(m_APS.Settings.m_ExecOrder);
 
+            textBox_MarginAdjust.Text = m_APS.Settings.m_MarginAdjustPix.ToString();
             textBox_AlignTop.Text = m_APS.Settings.m_TopAlignPix.ToString();
             textBox_AlignBottom.Text = m_APS.Settings.m_BottomAlignPix.ToString();
             textBox_AlignLeft.Text = m_APS.Settings.m_LeftAlignPix.ToString();
             textBox_AlignRight.Text = m_APS.Settings.m_RightAlignPix.ToString();
-            textBox_MarginAdjust.Text = m_APS.Settings.m_MarginAdjustPix.ToString();
+            textBox_ResizeHorizontal.Text = m_APS.Settings.m_ResizeHorizontalPix.ToString();
+            textBox_ResizeVirtical.Text = m_APS.Settings.m_ResizeVirticalPix.ToString();
 
             textBox_ThuresholdAlpha.Text = m_APS.Settings.m_ThuresholdAlpha.ToString();
             trackBar_ThuresholdAlpha.Value = m_APS.Settings.m_ThuresholdAlpha;
@@ -136,6 +141,8 @@ namespace ImageAdjuster
             m_ExecCheckBoxArr[(int)EXEC_TYPE.BOTTOM_ALIGN] = checkBox_AlignBottom;
             m_ExecCheckBoxArr[(int)EXEC_TYPE.LEFT_ALIGN] = checkBox_AlignLeft;
             m_ExecCheckBoxArr[(int)EXEC_TYPE.RIGHT_ALIGN] = checkBox_AlignRight;
+            m_ExecCheckBoxArr[(int)EXEC_TYPE.RESIZE_HORIZONTAL] = checkBox_ResizeHorizontal;
+            m_ExecCheckBoxArr[(int)EXEC_TYPE.RESIZE_VIRTICAL] = checkBox_ResizeVirtical;
 
             m_ExecOrderLabelArr = new Label[Enum.GetNames(typeof(EXEC_TYPE)).Length];
             m_ExecOrderLabelArr[(int)EXEC_TYPE.MARGIN_ADJUST] = label_MarginAlignOrder;
@@ -145,15 +152,19 @@ namespace ImageAdjuster
             m_ExecOrderLabelArr[(int)EXEC_TYPE.BOTTOM_ALIGN] = label_AlignBottomOrder;
             m_ExecOrderLabelArr[(int)EXEC_TYPE.LEFT_ALIGN] = label_AlignLeftOrder;
             m_ExecOrderLabelArr[(int)EXEC_TYPE.RIGHT_ALIGN] = label_AlignRightOrder;
+            m_ExecOrderLabelArr[(int)EXEC_TYPE.RESIZE_HORIZONTAL] = label_ResizeHorizontal;
+            m_ExecOrderLabelArr[(int)EXEC_TYPE.RESIZE_VIRTICAL] = label_ResizeVirtical;
         }
 
         private void SaveSetting()
         {
+            m_APS.Settings.m_MarginAdjustPix = int.Parse(textBox_MarginAdjust.Text);
             m_APS.Settings.m_TopAlignPix = int.Parse(textBox_AlignTop.Text);
             m_APS.Settings.m_BottomAlignPix = int.Parse(textBox_AlignBottom.Text);
             m_APS.Settings.m_LeftAlignPix = int.Parse(textBox_AlignLeft.Text);
             m_APS.Settings.m_RightAlignPix = int.Parse(textBox_AlignRight.Text);
-            m_APS.Settings.m_MarginAdjustPix = int.Parse(textBox_MarginAdjust.Text);
+            m_APS.Settings.m_ResizeHorizontalPix = int.Parse(textBox_ResizeHorizontal.Text);
+            m_APS.Settings.m_ResizeVirticalPix = int.Parse(textBox_ResizeVirtical.Text);
 
             m_APS.Settings.m_ThuresholdAlpha = int.Parse(textBox_ThuresholdAlpha.Text);
 
@@ -753,6 +764,20 @@ namespace ImageAdjuster
                         break;
 
 
+                    case EXEC_TYPE.RESIZE_HORIZONTAL:
+                        {
+                            var pix = m_APS.Settings.m_ResizeHorizontalPix;
+                            img = ResizeHorizontal(img, pix);
+                        }
+                        break;
+
+                    case EXEC_TYPE.RESIZE_VIRTICAL:
+                        {
+                            var pix = m_APS.Settings.m_ResizeVirticalPix;
+                            img = ResizeVertical(img, pix);
+                        }
+                        break;
+
                     default:
                         //何もしない
                         break;
@@ -836,6 +861,79 @@ namespace ImageAdjuster
             m_APS.Settings.m_ExecOrder = m_ExecOrder;
             m_APS.SaveData();
         }
+
+        private void ExecOrderUpdate(EXEC_TYPE et)
+        {
+            var preValue = int.MaxValue;
+            if (m_ExecCheckBoxArr[(int)et].Checked)
+            {
+                m_ExecOrder[(int)et] = GetOrder();
+            }
+            else
+            {
+                preValue = m_ExecOrder[(int)et];
+                m_ExecOrder[(int)et] = -1;
+            }
+
+            //中間の値が消されたら前詰めする。
+            for (int i = 0; i < m_ExecOrder.Length; i++)
+            {
+                if (m_ExecOrder[i] > preValue)
+                {
+                    m_ExecOrder[i]--;
+                }
+            }
+        }
+
+
+
+        //private void CheckBoxCheckedChanged(EXEC_TYPE et1, EXEC_TYPE et2)
+        //{
+        //    var preValue = int.MaxValue;
+        //    if (m_ExecCheckBoxArr[(int)et1].Checked)
+        //    {
+        //        m_ExecOrder[(int)et1] = GetOrder();
+        //    }
+        //    else
+        //    {
+        //        preValue = m_ExecOrder[(int)et1];
+        //        m_ExecOrder[(int)et1] = -1;
+        //    }
+
+        //    //中間の値が消されたら前詰めする。
+        //    for (int i = 0; i < m_ExecOrder.Length; i++)
+        //    {
+        //        if (m_ExecOrder[i] > preValue)
+        //        {
+        //            m_ExecOrder[i]--;
+        //        }
+        //    }
+
+
+        //    if (m_ExecCheckBoxArr[(int)et2].Checked)
+        //    {
+        //        m_ExecOrder[(int)et2] = GetOrder();
+        //    }
+        //    else
+        //    {
+        //        preValue = m_ExecOrder[(int)et1];
+        //        m_ExecOrder[(int)et2] = -1;
+        //    }
+
+
+        //    //中間の値が消されたら前詰めする。
+        //    for (int i = 0; i < m_ExecOrder.Length; i++)
+        //    {
+        //        if (m_ExecOrder[i] > preValue)
+        //        {
+        //            m_ExecOrder[i]--;
+        //        }
+        //    }
+
+        //    UpdateUI();
+        //    m_APS.Settings.m_ExecOrder = m_ExecOrder;
+        //    m_APS.SaveData();
+        //}
 
         private int GetOrder()
         {
@@ -1111,6 +1209,32 @@ namespace ImageAdjuster
         {
             return RemoveRightMargin((Bitmap)img, alpha);
         }
+
+        private Image ResizeHorizontal(Image img, int width)
+        {
+            int height = width * img.Height / img.Width;
+            Bitmap canvas = new Bitmap(width, height);
+            using (Graphics g = Graphics.FromImage(canvas))
+            {
+                g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                g.DrawImage(img, 0, 0, width, height);
+            }
+            return canvas;
+        }
+
+        private Image ResizeVertical(Image img, int height)
+        {
+            int width = height * img.Width / img.Height;
+            Bitmap canvas = new Bitmap(width, height);
+            using (Graphics g = Graphics.FromImage(canvas))
+            {
+                g.InterpolationMode = InterpolationMode.Default;
+                g.DrawImage(img, 0, 0, width, height);
+            }
+            return canvas;
+        }
+
+
 
         private Image RemoveBottomMargin(Bitmap img, int alpha)
         {
@@ -1479,6 +1603,66 @@ namespace ImageAdjuster
         private void button_StateReset_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void textBox_ResizeHorizontal_TextChanged(object sender, EventArgs e)
+        {
+            if (m_EventEnable == false) { return; }
+
+            var input = ValueLimit(textBox_ResizeHorizontal.Text, 0, 1000);
+            textBox_AlignRight.Text = input.ToString();
+            SaveSetting();
+            UpdatePictureBox();
+
+        }
+
+        private void textBox_ResizeVirtical_TextChanged(object sender, EventArgs e)
+        {
+            if (m_EventEnable == false) { return; }
+
+            var input = ValueLimit(textBox_ResizeVirtical.Text, 0, 1000);
+            textBox_AlignRight.Text = input.ToString();
+            SaveSetting();
+            UpdatePictureBox();
+
+        }
+
+        private void checkBox_ResizeHorizontal_CheckedChanged(object sender, EventArgs e)
+        {
+            if (m_EventEnable == false) { return; }
+
+            {
+                m_EventEnable = false;
+                //縦指定がチェックされていたら外す
+                if (checkBox_ResizeVirtical.Checked == true)
+                {
+                    checkBox_ResizeVirtical.Checked = false;
+                    ExecOrderUpdate(EXEC_TYPE.RESIZE_VIRTICAL);
+                }
+                m_EventEnable = true;
+            }
+
+            CheckBoxCheckedChanged(EXEC_TYPE.RESIZE_HORIZONTAL);
+            UpdatePictureBox();
+        }
+
+        private void checkBox_ResizeVirtical_CheckedChanged(object sender, EventArgs e)
+        {
+            if (m_EventEnable == false) { return; }
+
+            {
+                m_EventEnable = false;
+                //横指定がチェックされていたら外す
+                if (checkBox_ResizeHorizontal.Checked == true)
+                {
+                    checkBox_ResizeHorizontal.Checked = false;
+                    ExecOrderUpdate(EXEC_TYPE.RESIZE_HORIZONTAL);
+                }
+                m_EventEnable = true;
+            }
+
+            CheckBoxCheckedChanged(EXEC_TYPE.RESIZE_VIRTICAL);
+            UpdatePictureBox();
         }
     }
 }
