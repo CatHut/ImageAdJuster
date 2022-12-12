@@ -84,7 +84,7 @@ namespace ImageAdjuster
         {
             { LISTVIEW_STATE.WAIT, "未" },
             { LISTVIEW_STATE.WORKING, "処理中" },
-            { LISTVIEW_STATE.COMPLETED, "済" }
+            { LISTVIEW_STATE.COMPLETED, "処理済" }
         };
 
         bool m_EventEnable = true;
@@ -220,7 +220,7 @@ namespace ImageAdjuster
             textBox_ThuresholdAlpha.Enabled = enable;
             button_ExecClear.Enabled = enable;
             button_StateReset.Enabled = enable;
-            //listView_FileList.Enabled = enable;
+            listView_FileList.Enabled = enable;
 
         }
 
