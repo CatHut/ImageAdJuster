@@ -32,6 +32,8 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.checkBox_FlipHorizontal = new System.Windows.Forms.CheckBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.label_Status = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
             this.button_SelectedExec = new System.Windows.Forms.Button();
             this.label_ResizeVirtical = new System.Windows.Forms.Label();
             this.label_ResizeHorizontal = new System.Windows.Forms.Label();
@@ -61,8 +63,6 @@
             this.label_AlignBottomOrder = new System.Windows.Forms.Label();
             this.label_MarginAlignOrder = new System.Windows.Forms.Label();
             this.label_FlipVirticalOrder = new System.Windows.Forms.Label();
-            this.label_Status = new System.Windows.Forms.Label();
-            this.label8 = new System.Windows.Forms.Label();
             this.button_Exec = new System.Windows.Forms.Button();
             this.checkBox_FlipVirtical = new System.Windows.Forms.CheckBox();
             this.label6 = new System.Windows.Forms.Label();
@@ -156,12 +156,30 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "操作";
             // 
+            // label_Status
+            // 
+            this.label_Status.AutoSize = true;
+            this.label_Status.Location = new System.Drawing.Point(78, 433);
+            this.label_Status.Name = "label_Status";
+            this.label_Status.Size = new System.Drawing.Size(74, 15);
+            this.label_Status.TabIndex = 12;
+            this.label_Status.Text = "何もしてないよ";
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(10, 433);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(51, 15);
+            this.label8.TabIndex = 11;
+            this.label8.Text = "ステータス";
+            // 
             // button_SelectedExec
             // 
             this.button_SelectedExec.Location = new System.Drawing.Point(94, 466);
             this.button_SelectedExec.Name = "button_SelectedExec";
             this.button_SelectedExec.Size = new System.Drawing.Size(94, 31);
-            this.button_SelectedExec.TabIndex = 41;
+            this.button_SelectedExec.TabIndex = 19;
             this.button_SelectedExec.Text = "選択実行";
             this.button_SelectedExec.UseVisualStyleBackColor = true;
             this.button_SelectedExec.Click += new System.EventHandler(this.button_SelectedExec_Click);
@@ -199,7 +217,7 @@
             this.textBox_ResizeVirtical.MaxLength = 5;
             this.textBox_ResizeVirtical.Name = "textBox_ResizeVirtical";
             this.textBox_ResizeVirtical.Size = new System.Drawing.Size(65, 23);
-            this.textBox_ResizeVirtical.TabIndex = 37;
+            this.textBox_ResizeVirtical.TabIndex = 15;
             this.textBox_ResizeVirtical.Text = "10";
             this.textBox_ResizeVirtical.TextChanged += new System.EventHandler(this.textBox_ResizeVirtical_TextChanged);
             // 
@@ -209,7 +227,7 @@
             this.checkBox_ResizeVirtical.Location = new System.Drawing.Point(66, 306);
             this.checkBox_ResizeVirtical.Name = "checkBox_ResizeVirtical";
             this.checkBox_ResizeVirtical.Size = new System.Drawing.Size(98, 19);
-            this.checkBox_ResizeVirtical.TabIndex = 36;
+            this.checkBox_ResizeVirtical.TabIndex = 8;
             this.checkBox_ResizeVirtical.Text = "リサイズ縦指定";
             this.checkBox_ResizeVirtical.UseVisualStyleBackColor = true;
             this.checkBox_ResizeVirtical.CheckedChanged += new System.EventHandler(this.checkBox_ResizeVirtical_CheckedChanged);
@@ -229,7 +247,7 @@
             this.textBox_ResizeHorizontal.MaxLength = 5;
             this.textBox_ResizeHorizontal.Name = "textBox_ResizeHorizontal";
             this.textBox_ResizeHorizontal.Size = new System.Drawing.Size(65, 23);
-            this.textBox_ResizeHorizontal.TabIndex = 34;
+            this.textBox_ResizeHorizontal.TabIndex = 14;
             this.textBox_ResizeHorizontal.Text = "10";
             this.textBox_ResizeHorizontal.TextChanged += new System.EventHandler(this.textBox_ResizeHorizontal_TextChanged);
             // 
@@ -239,7 +257,7 @@
             this.checkBox_ResizeHorizontal.Location = new System.Drawing.Point(66, 274);
             this.checkBox_ResizeHorizontal.Name = "checkBox_ResizeHorizontal";
             this.checkBox_ResizeHorizontal.Size = new System.Drawing.Size(98, 19);
-            this.checkBox_ResizeHorizontal.TabIndex = 33;
+            this.checkBox_ResizeHorizontal.TabIndex = 7;
             this.checkBox_ResizeHorizontal.Text = "リサイズ横指定";
             this.checkBox_ResizeHorizontal.UseVisualStyleBackColor = true;
             this.checkBox_ResizeHorizontal.CheckedChanged += new System.EventHandler(this.checkBox_ResizeHorizontal_CheckedChanged);
@@ -267,7 +285,7 @@
             this.trackBar_ThuresholdAlpha.Maximum = 255;
             this.trackBar_ThuresholdAlpha.Name = "trackBar_ThuresholdAlpha";
             this.trackBar_ThuresholdAlpha.Size = new System.Drawing.Size(182, 45);
-            this.trackBar_ThuresholdAlpha.TabIndex = 30;
+            this.trackBar_ThuresholdAlpha.TabIndex = 17;
             this.trackBar_ThuresholdAlpha.TickFrequency = 16;
             this.trackBar_ThuresholdAlpha.ValueChanged += new System.EventHandler(this.trackBar_ThuresholdAlpha_ValueChanged);
             // 
@@ -277,7 +295,7 @@
             this.textBox_ThuresholdAlpha.MaxLength = 5;
             this.textBox_ThuresholdAlpha.Name = "textBox_ThuresholdAlpha";
             this.textBox_ThuresholdAlpha.Size = new System.Drawing.Size(65, 23);
-            this.textBox_ThuresholdAlpha.TabIndex = 29;
+            this.textBox_ThuresholdAlpha.TabIndex = 18;
             this.textBox_ThuresholdAlpha.Text = "10";
             this.textBox_ThuresholdAlpha.TextChanged += new System.EventHandler(this.textBox_ThuresholdAlpha_TextChanged);
             // 
@@ -286,7 +304,7 @@
             this.button_ExecClear.Location = new System.Drawing.Point(65, 341);
             this.button_ExecClear.Name = "button_ExecClear";
             this.button_ExecClear.Size = new System.Drawing.Size(75, 23);
-            this.button_ExecClear.TabIndex = 28;
+            this.button_ExecClear.TabIndex = 16;
             this.button_ExecClear.Text = "クリア";
             this.button_ExecClear.UseVisualStyleBackColor = true;
             this.button_ExecClear.Click += new System.EventHandler(this.button_ExecClear_Click);
@@ -333,7 +351,7 @@
             this.textBox_AlignRight.MaxLength = 5;
             this.textBox_AlignRight.Name = "textBox_AlignRight";
             this.textBox_AlignRight.Size = new System.Drawing.Size(65, 23);
-            this.textBox_AlignRight.TabIndex = 23;
+            this.textBox_AlignRight.TabIndex = 13;
             this.textBox_AlignRight.Text = "10";
             this.textBox_AlignRight.TextChanged += new System.EventHandler(this.textBox_AlignRight_TextChanged);
             // 
@@ -343,7 +361,7 @@
             this.checkBox_AlignRight.Location = new System.Drawing.Point(66, 242);
             this.checkBox_AlignRight.Name = "checkBox_AlignRight";
             this.checkBox_AlignRight.Size = new System.Drawing.Size(86, 19);
-            this.checkBox_AlignRight.TabIndex = 22;
+            this.checkBox_AlignRight.TabIndex = 6;
             this.checkBox_AlignRight.Text = "右余白調整";
             this.checkBox_AlignRight.UseVisualStyleBackColor = true;
             this.checkBox_AlignRight.CheckedChanged += new System.EventHandler(this.checkBox_AlignRight_CheckedChanged);
@@ -363,7 +381,7 @@
             this.textBox_AlignLeft.MaxLength = 5;
             this.textBox_AlignLeft.Name = "textBox_AlignLeft";
             this.textBox_AlignLeft.Size = new System.Drawing.Size(65, 23);
-            this.textBox_AlignLeft.TabIndex = 20;
+            this.textBox_AlignLeft.TabIndex = 12;
             this.textBox_AlignLeft.Text = "10";
             this.textBox_AlignLeft.TextChanged += new System.EventHandler(this.textBox_AlignLeft_TextChanged);
             // 
@@ -373,7 +391,7 @@
             this.checkBox_AlignLeft.Location = new System.Drawing.Point(66, 210);
             this.checkBox_AlignLeft.Name = "checkBox_AlignLeft";
             this.checkBox_AlignLeft.Size = new System.Drawing.Size(86, 19);
-            this.checkBox_AlignLeft.TabIndex = 19;
+            this.checkBox_AlignLeft.TabIndex = 5;
             this.checkBox_AlignLeft.Text = "左余白調整";
             this.checkBox_AlignLeft.UseVisualStyleBackColor = true;
             this.checkBox_AlignLeft.CheckedChanged += new System.EventHandler(this.checkBox_AlignLeft_CheckedChanged);
@@ -393,7 +411,7 @@
             this.textBox_AlignTop.MaxLength = 5;
             this.textBox_AlignTop.Name = "textBox_AlignTop";
             this.textBox_AlignTop.Size = new System.Drawing.Size(65, 23);
-            this.textBox_AlignTop.TabIndex = 17;
+            this.textBox_AlignTop.TabIndex = 10;
             this.textBox_AlignTop.Text = "10";
             this.textBox_AlignTop.TextChanged += new System.EventHandler(this.textBox_AlignTop_TextChanged);
             // 
@@ -403,7 +421,7 @@
             this.checkBox_AlignTop.Location = new System.Drawing.Point(66, 146);
             this.checkBox_AlignTop.Name = "checkBox_AlignTop";
             this.checkBox_AlignTop.Size = new System.Drawing.Size(86, 19);
-            this.checkBox_AlignTop.TabIndex = 16;
+            this.checkBox_AlignTop.TabIndex = 3;
             this.checkBox_AlignTop.Text = "上余白調整";
             this.checkBox_AlignTop.UseVisualStyleBackColor = true;
             this.checkBox_AlignTop.CheckedChanged += new System.EventHandler(this.checkBox_AlignTop_CheckedChanged);
@@ -435,30 +453,12 @@
             this.label_FlipVirticalOrder.TabIndex = 13;
             this.label_FlipVirticalOrder.Text = "1";
             // 
-            // label_Status
-            // 
-            this.label_Status.AutoSize = true;
-            this.label_Status.Location = new System.Drawing.Point(78, 433);
-            this.label_Status.Name = "label_Status";
-            this.label_Status.Size = new System.Drawing.Size(74, 15);
-            this.label_Status.TabIndex = 12;
-            this.label_Status.Text = "何もしてないよ";
-            // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(10, 433);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(51, 15);
-            this.label8.TabIndex = 11;
-            this.label8.Text = "ステータス";
-            // 
             // button_Exec
             // 
             this.button_Exec.Location = new System.Drawing.Point(194, 466);
             this.button_Exec.Name = "button_Exec";
             this.button_Exec.Size = new System.Drawing.Size(94, 31);
-            this.button_Exec.TabIndex = 10;
+            this.button_Exec.TabIndex = 20;
             this.button_Exec.Text = "一括実行";
             this.button_Exec.UseVisualStyleBackColor = true;
             this.button_Exec.Click += new System.EventHandler(this.button_Exec_Click);
@@ -469,7 +469,7 @@
             this.checkBox_FlipVirtical.Location = new System.Drawing.Point(66, 82);
             this.checkBox_FlipVirtical.Name = "checkBox_FlipVirtical";
             this.checkBox_FlipVirtical.Size = new System.Drawing.Size(74, 19);
-            this.checkBox_FlipVirtical.TabIndex = 9;
+            this.checkBox_FlipVirtical.TabIndex = 1;
             this.checkBox_FlipVirtical.Text = "上下反転";
             this.checkBox_FlipVirtical.UseVisualStyleBackColor = true;
             this.checkBox_FlipVirtical.CheckedChanged += new System.EventHandler(this.checkBox_FlipVirtical_CheckedChanged);
@@ -489,7 +489,7 @@
             this.textBox_MarginAdjust.MaxLength = 5;
             this.textBox_MarginAdjust.Name = "textBox_MarginAdjust";
             this.textBox_MarginAdjust.Size = new System.Drawing.Size(65, 23);
-            this.textBox_MarginAdjust.TabIndex = 7;
+            this.textBox_MarginAdjust.TabIndex = 9;
             this.textBox_MarginAdjust.Text = "10";
             this.textBox_MarginAdjust.TextChanged += new System.EventHandler(this.textBox_MarginAdjust_TextChanged);
             // 
@@ -499,7 +499,7 @@
             this.checkBox_MarginAdjust.Location = new System.Drawing.Point(66, 114);
             this.checkBox_MarginAdjust.Name = "checkBox_MarginAdjust";
             this.checkBox_MarginAdjust.Size = new System.Drawing.Size(122, 19);
-            this.checkBox_MarginAdjust.TabIndex = 6;
+            this.checkBox_MarginAdjust.TabIndex = 2;
             this.checkBox_MarginAdjust.Text = "上下左右余白調整";
             this.checkBox_MarginAdjust.UseVisualStyleBackColor = true;
             this.checkBox_MarginAdjust.CheckedChanged += new System.EventHandler(this.checkBox_MarginAdjust_CheckedChanged);
@@ -537,7 +537,7 @@
             this.textBox_AlignBottom.MaxLength = 5;
             this.textBox_AlignBottom.Name = "textBox_AlignBottom";
             this.textBox_AlignBottom.Size = new System.Drawing.Size(65, 23);
-            this.textBox_AlignBottom.TabIndex = 2;
+            this.textBox_AlignBottom.TabIndex = 11;
             this.textBox_AlignBottom.Text = "10";
             this.textBox_AlignBottom.TextChanged += new System.EventHandler(this.textBox_AlignBottom_TextChanged);
             // 
@@ -547,7 +547,7 @@
             this.checkBox_AlignBottom.Location = new System.Drawing.Point(66, 178);
             this.checkBox_AlignBottom.Name = "checkBox_AlignBottom";
             this.checkBox_AlignBottom.Size = new System.Drawing.Size(86, 19);
-            this.checkBox_AlignBottom.TabIndex = 1;
+            this.checkBox_AlignBottom.TabIndex = 4;
             this.checkBox_AlignBottom.Text = "下余白調整";
             this.checkBox_AlignBottom.UseVisualStyleBackColor = true;
             this.checkBox_AlignBottom.CheckedChanged += new System.EventHandler(this.checkBox_AlignBottom_CheckedChanged);
@@ -684,7 +684,7 @@
             this.button_StateReset.Location = new System.Drawing.Point(514, 10);
             this.button_StateReset.Name = "button_StateReset";
             this.button_StateReset.Size = new System.Drawing.Size(107, 26);
-            this.button_StateReset.TabIndex = 41;
+            this.button_StateReset.TabIndex = 2;
             this.button_StateReset.Text = "処理済リセット";
             this.button_StateReset.UseVisualStyleBackColor = true;
             this.button_StateReset.Click += new System.EventHandler(this.button_StateReset_Click);
