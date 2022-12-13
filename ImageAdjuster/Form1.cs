@@ -348,6 +348,15 @@ namespace ImageAdjuster
 
             if ((Control.ModifierKeys & Keys.Control) == Keys.Control) 
             {
+                if (e.KeyCode == Keys.A)
+                {
+                    listView_FileList.BeginUpdate();
+                    foreach (ListViewItem itm in this.listView_FileList.Items)
+                    {
+                        itm.Selected = true;
+                    }
+                    listView_FileList.EndUpdate();
+                }
                 return;
             }
 
@@ -371,63 +380,133 @@ namespace ImageAdjuster
             }
         }
 
-        private void listView_FileList_DragDrop(object sender, DragEventArgs e)
+        private async void listView_FileList_DragDrop(object sender, DragEventArgs e)
         {
+            if(m_EventEnable == false) { return; }
+
+            m_EventEnable = false;
+            button_Exec.Enabled = false;
+            button_StateReset.Enabled = false;
+            button_SelectedExec.Enabled = false;
+            listView_FileList.Enabled = false;
+
+
             // ドロップされたデータを取得
             string[] files = (string[])e.Data.GetData(DataFormats.FileDrop, false);
 
-            listView_FileList.BeginUpdate();
+
+            // 非同期でFuncAを実行する
+            await Task.Run(() => RegistFiles(files));
+            //RegistFiles(files);
+
+            //何も選択されていない状態であれば、一番上を選択する
+            if (listView_FileList.SelectedItems.Count == 0)
             {
-                var hashset = new HashSet<string>();
+                listView_FileList.Items[0].Selected = true;
+                listView_FileList.EnsureVisible(0);
+            }
+
+            listView_FileList.Focus();
+            UpdatePictureBox();
+
+            button_Exec.Enabled = true;
+            button_StateReset.Enabled = true;
+            button_SelectedExec.Enabled = true;
+            listView_FileList.Enabled = true;
+            label_Status.Text = "何もしてないよ";
+            m_EventEnable = true;
+
+        }
+
+
+        private void RegistFiles(string[] files)
+        {
+
+            var hashset = new HashSet<string>();
+            //すでに登録されているモノを保持する
+
+            Invoke((MethodInvoker)delegate
+            {
+                label_Status.Text = "ファイルカウント中";
+
                 foreach (ListViewItem item in listView_FileList.Items)
                 {
                     if (item.SubItems.Count > (int)LISTVIEW_COLUMN_HEADER.PATH)
                     {
-                        if (File.Exists(item.SubItems[(int)LISTVIEW_COLUMN_HEADER.PATH].Text)){
+                        if (File.Exists(item.SubItems[(int)LISTVIEW_COLUMN_HEADER.PATH].Text))
+                        {
                             hashset.Add(item.SubItems[(int)LISTVIEW_COLUMN_HEADER.PATH].Text);
                         }
                     }
                 }
+            });
 
-                foreach (var file in files)
+            //ファイルリストを作成する。
+            CreateFileList(files, hashset);
+
+            Invoke((MethodInvoker)delegate
+            {
+                label_Status.Text = hashset.Count.ToString() + "ファイル見つかりました";
+            });
+
+            var itemList = new List<ListViewItem>();
+            foreach (var file in hashset)
+            {
+                var item = new string[] { Path.GetFileName(file), m_StateDic[LISTVIEW_STATE.WAIT], file };
+                itemList.Add(new ListViewItem(item));
+            }
+
+            Invoke((MethodInvoker)delegate
+            {
+                label_Status.Text = hashset.Count.ToString() + "ファイル追加中";
+                listView_FileList.BeginUpdate();
+                {
+                    //リストビューを一旦クリア
+                    listView_FileList.Items.Clear();
+                    listView_FileList.Items.AddRange(itemList.ToArray());
+
+                    if (listView_FileList.Items.Count == 0)
+                    {
+                        var item = new string[] { "ここにファイルをドラッグ＆ドロップ", "" };
+                        listView_FileList.Items.Add(new ListViewItem(item));
+                    }
+                }
+                listView_FileList.EndUpdate();
+            });
+
+        }
+
+        private static void CreateFileList(string[] files, HashSet<string> hashset)
+        {
+            string[] patterns = { ".jpg", ".png", ".bmp", "gif" };
+
+            foreach (var file in files)
+            {
+                if (Directory.Exists(file))
+                {
+                    IEnumerable<string> filesList = Directory.EnumerateFiles(file, "*", System.IO.SearchOption.AllDirectories);
+                    var ret = filesList.Where(file => patterns.Any(pattern => file.ToLower().EndsWith(pattern)));
+
+                    foreach (var temp in ret)
+                    {
+                        hashset.Add(temp);
+                    }
+
+                }
+
+                if (File.Exists(file))
                 {
                     var ext = Path.GetExtension(file);
+                    //拡張子が画像じゃないものはスルー
                     if (ext != ".jpg" && ext != ".png" && ext != ".bmp" && ext != ".gif")
                     {
                         continue;
                     }
                     hashset.Add(file);
                 }
-
-
-                listView_FileList.Items.Clear();
-
-                var itemList = new List<ListViewItem>();
-                foreach (var file in hashset)
-                {
-                    var item = new string[] { Path.GetFileName(file), m_StateDic[LISTVIEW_STATE.WAIT] , file };
-                    itemList.Add(new ListViewItem(item));
-                }
-
-                listView_FileList.Items.AddRange(itemList.ToArray());
-
-
-                if (listView_FileList.Items.Count == 0)
-                {
-                    var item = new string[] { "ここにファイルをドラッグ＆ドロップ", "" };
-                    listView_FileList.Items.Add(new ListViewItem(item));
-                }
             }
-            listView_FileList.EndUpdate();
-
-            if(listView_FileList.SelectedItems.Count == 0)
-            {
-                listView_FileList.Items[0].Selected = true;
-            }
-
-            listView_FileList.Focus();
-            UpdatePictureBox();
         }
+
 
         private void listView_FileList_DragEnter(object sender, DragEventArgs e)
         {
@@ -456,6 +535,9 @@ namespace ImageAdjuster
             {
                 if(listView_FileList.FocusedItem.SubItems.Count < 2) { return; }
 
+                label_Status.Text = "画像を表示するよ　ちょっとまってね！";
+                this.Refresh();
+
                 var item = listView_FileList.FocusedItem;
                 var path = item.SubItems[(int)LISTVIEW_COLUMN_HEADER.PATH].Text;
                 var file = item.SubItems[(int)LISTVIEW_COLUMN_HEADER.FILE].Text;
@@ -472,12 +554,17 @@ namespace ImageAdjuster
                 label_AfterSize.Text = img.Width.ToString() + " ✕ " + img.Height.ToString();
                 label_FileName.Text = file;
 
+                label_Status.Text = "何もしてないよ";
             }
         }
 
         private void UpdatePictureBox(int idx)
         {
+
             if (listView_FileList.Items[idx].SubItems.Count < 2) { return; }
+
+            label_Status.Text = "画像を表示するよ　ちょっとまってね！";
+            this.Refresh();
 
             var item = listView_FileList.Items[idx];
             var path = item.SubItems[(int)LISTVIEW_COLUMN_HEADER.PATH].Text;
@@ -495,6 +582,7 @@ namespace ImageAdjuster
             label_AfterSize.Text = img.Width.ToString() + " ✕ " + img.Height.ToString();
             label_FileName.Text = file;
 
+            label_Status.Text = "何もしてないよ";
         }
 
         private async void button_Exec_Click(object sender, EventArgs e)
