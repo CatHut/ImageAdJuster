@@ -26,6 +26,7 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.ToolBar;
 using Image = System.Drawing.Image;
 using TextBox = System.Windows.Forms.TextBox;
+using ToolTip = System.Windows.Forms.ToolTip;
 
 namespace ImageAdjuster
 {
@@ -79,6 +80,17 @@ namespace ImageAdjuster
         private CheckBox[] m_ExecCheckBoxArr;
         private Label[] m_ExecOrderLabelArr;
         private TextBox[] m_ParamTextBoxArr;
+        private string[] m_CheckBoxTooltipTextArr;
+        private string[] m_TextBoxTooltipTextArr;
+        private ToolTip[] m_CheckBoxTooltipArr;
+        private ToolTip[] m_TextBoxTooltipArr;
+        private ToolTip m_button_ExecClearToolTip;
+        private ToolTip m_trackBar_ThuresholdAlphaToolTip;
+        private ToolTip m_textBox_ThuresholdAlphaToolTip;
+        private ToolTip m_button_SelectedExecToolTip;
+        private ToolTip m_button_ExecToolTip;
+        private ToolTip m_button_StateResetToolTip;
+
         private AppSetting m_APS;
         private Dictionary<LISTVIEW_STATE, string> m_StateDic = new Dictionary<LISTVIEW_STATE, string>()
         {
@@ -136,6 +148,30 @@ namespace ImageAdjuster
 
         private void InitializeMember()
         {
+            //ToolTipのテキスト定義
+            m_CheckBoxTooltipTextArr = new string[Enum.GetNames(typeof(EXEC_TYPE)).Length];
+            m_CheckBoxTooltipTextArr[(int)EXEC_TYPE.MARGIN_ADJUST] = "上下左右の余白を指定のpix数に調整するよ";
+            m_CheckBoxTooltipTextArr[(int)EXEC_TYPE.FLIP_HORIZONTAL] = "画像を左右反転するよ";
+            m_CheckBoxTooltipTextArr[(int)EXEC_TYPE.FLIP_VIRTICAL] = "画像を上下反転するよ";
+            m_CheckBoxTooltipTextArr[(int)EXEC_TYPE.TOP_ALIGN] = "上の余白を指定のpix数に調整するよ";
+            m_CheckBoxTooltipTextArr[(int)EXEC_TYPE.BOTTOM_ALIGN] = "下の余白を指定のpix数に調整するよ";
+            m_CheckBoxTooltipTextArr[(int)EXEC_TYPE.LEFT_ALIGN] = "左の余白を指定のpix数に調整するよ";
+            m_CheckBoxTooltipTextArr[(int)EXEC_TYPE.RIGHT_ALIGN] = "右の余白を指定のpix数に調整するよ";
+            m_CheckBoxTooltipTextArr[(int)EXEC_TYPE.RESIZE_HORIZONTAL] = "縦横比を維持して指定の横幅になるよう拡縮するよ";
+            m_CheckBoxTooltipTextArr[(int)EXEC_TYPE.RESIZE_VIRTICAL] = "縦横比を維持して指定の高さになるよう拡縮するよ";
+
+            m_TextBoxTooltipTextArr = new string[Enum.GetNames(typeof(EXEC_TYPE)).Length];
+            m_TextBoxTooltipTextArr[(int)EXEC_TYPE.MARGIN_ADJUST] = "上下左右の余白のpix数を指定してね";
+            m_TextBoxTooltipTextArr[(int)EXEC_TYPE.TOP_ALIGN] = "上の余白のpix数を指定してね";
+            m_TextBoxTooltipTextArr[(int)EXEC_TYPE.BOTTOM_ALIGN] = "下の余白のpix数を指定してね";
+            m_TextBoxTooltipTextArr[(int)EXEC_TYPE.LEFT_ALIGN] = "右の余白のpix数を指定してね";
+            m_TextBoxTooltipTextArr[(int)EXEC_TYPE.RIGHT_ALIGN] = "左の余白のpix数を指定してね";
+            m_TextBoxTooltipTextArr[(int)EXEC_TYPE.RESIZE_HORIZONTAL] = "拡縮後の横幅を指定してね";
+            m_TextBoxTooltipTextArr[(int)EXEC_TYPE.RESIZE_VIRTICAL] = "拡縮後の高さを指定してね";
+
+
+
+            //チェックボックス定義
             m_ExecCheckBoxArr = new CheckBox[Enum.GetNames(typeof(EXEC_TYPE)).Length];
             m_ExecCheckBoxArr[(int)EXEC_TYPE.MARGIN_ADJUST] = checkBox_MarginAdjust;
             m_ExecCheckBoxArr[(int)EXEC_TYPE.FLIP_HORIZONTAL] = checkBox_FlipHorizontal;
@@ -146,6 +182,19 @@ namespace ImageAdjuster
             m_ExecCheckBoxArr[(int)EXEC_TYPE.RIGHT_ALIGN] = checkBox_AlignRight;
             m_ExecCheckBoxArr[(int)EXEC_TYPE.RESIZE_HORIZONTAL] = checkBox_ResizeHorizontal;
             m_ExecCheckBoxArr[(int)EXEC_TYPE.RESIZE_VIRTICAL] = checkBox_ResizeVirtical;
+
+            //チェックボックスにToolTip設定
+            m_CheckBoxTooltipArr = new ToolTip[Enum.GetNames(typeof(EXEC_TYPE)).Length];
+            for (int i = 0; i < m_CheckBoxTooltipArr.Length; i++)
+            {
+                m_CheckBoxTooltipArr[i] = CreateToolTip();
+
+                if (m_ExecCheckBoxArr[i] != null)
+                {
+                    m_CheckBoxTooltipArr[i].SetToolTip(m_ExecCheckBoxArr[i], m_CheckBoxTooltipTextArr[i]);
+                }
+            }
+
 
             m_ExecOrderLabelArr = new Label[Enum.GetNames(typeof(EXEC_TYPE)).Length];
             m_ExecOrderLabelArr[(int)EXEC_TYPE.MARGIN_ADJUST] = label_MarginAlignOrder;
@@ -167,8 +216,49 @@ namespace ImageAdjuster
             m_ParamTextBoxArr[(int)EXEC_TYPE.RESIZE_HORIZONTAL] = textBox_ResizeHorizontal;
             m_ParamTextBoxArr[(int)EXEC_TYPE.RESIZE_VIRTICAL] = textBox_ResizeVirtical;
 
+            m_TextBoxTooltipArr = new ToolTip[Enum.GetNames(typeof(EXEC_TYPE)).Length];
+            for (int i = 0; i < m_TextBoxTooltipArr.Length; i++)
+            {
+                m_TextBoxTooltipArr[i] = CreateToolTip();
+
+                if (m_ParamTextBoxArr[i] != null)
+                {
+                    m_TextBoxTooltipArr[i].SetToolTip(m_ParamTextBoxArr[i], m_TextBoxTooltipTextArr[i]);
+                }
+            }
+
+
+            m_button_ExecClearToolTip = CreateToolTip();
+            m_button_ExecClearToolTip.SetToolTip(button_ExecClear, "チェックボックスを全部解除するよ");
+            m_trackBar_ThuresholdAlphaToolTip = CreateToolTip();
+            m_trackBar_ThuresholdAlphaToolTip.SetToolTip(trackBar_ThuresholdAlpha, "透明部分と判定するアルファ値を設定するよ" + Environment.NewLine + "クリックすると1ずつ調整できるよ");
+            m_textBox_ThuresholdAlphaToolTip = CreateToolTip();
+            m_textBox_ThuresholdAlphaToolTip.SetToolTip(textBox_ThuresholdAlpha, "透明部分と判定するアルファ値を設定するよ" + Environment.NewLine + "数字が大きいほど濃く描かれたところも透明扱いするよ");
+            m_button_SelectedExecToolTip = CreateToolTip();
+            m_button_SelectedExecToolTip.SetToolTip(button_SelectedExec, "ファイルリストで選択されている画像を処理するよ" + Environment.NewLine + "画像は上書きされるから気をつけてね");
+            m_button_ExecToolTip = CreateToolTip();
+            m_button_ExecToolTip.SetToolTip(button_Exec, "ファイルリストの画像全部をを処理するよ" + Environment.NewLine + "画像は上書きされるから気をつけてね");
+            m_button_StateResetToolTip = CreateToolTip();
+            m_button_StateResetToolTip.SetToolTip(button_StateReset, "処理状態をリセットするよ" + Environment.NewLine + "もう一度処理をかけたいときに使ってね");
+
 
         }
+
+        private ToolTip CreateToolTip()
+        {
+            ToolTip tip = new ToolTip();
+            //tip.ReshowDelay = 100;
+            //tip.AutoPopDelay = 5000;
+            //tip.InitialDelay = 1;
+            tip.AutomaticDelay = 300;
+
+            tip.UseAnimation  = false;
+            tip.UseFading = true;
+
+            return tip;
+        }
+
+    
 
         private void SaveSetting()
         {
