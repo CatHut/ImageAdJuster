@@ -695,7 +695,7 @@
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1484, 530);
+            this.ClientSize = new System.Drawing.Size(1484, 531);
             this.Controls.Add(this.button_StateReset);
             this.Controls.Add(this.label_AfterSize);
             this.Controls.Add(this.label_AfterSizeTitle);
