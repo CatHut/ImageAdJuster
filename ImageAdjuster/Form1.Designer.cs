@@ -687,6 +687,7 @@
             this.button_StateReset.TabIndex = 2;
             this.button_StateReset.Text = "処理済リセット";
             this.button_StateReset.UseVisualStyleBackColor = true;
+            this.button_StateReset.Visible = false;
             this.button_StateReset.Click += new System.EventHandler(this.button_StateReset_Click);
             // 
             // Form1
