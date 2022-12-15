@@ -1914,7 +1914,7 @@ namespace ImageAdjuster
             if (m_EventEnable == false) { return; }
 
             var input = ValueLimit(textBox_ResizeHorizontal.Text, 0, 1000);
-            textBox_AlignRight.Text = input.ToString();
+            textBox_ResizeHorizontal.Text = input.ToString();
             SaveSetting();
             UpdatePictureBox();
 
@@ -1925,7 +1925,7 @@ namespace ImageAdjuster
             if (m_EventEnable == false) { return; }
 
             var input = ValueLimit(textBox_ResizeVirtical.Text, 0, 1000);
-            textBox_AlignRight.Text = input.ToString();
+            textBox_ResizeVirtical.Text = input.ToString();
             SaveSetting();
             UpdatePictureBox();
 
