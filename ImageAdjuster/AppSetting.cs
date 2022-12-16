@@ -15,6 +15,8 @@ namespace CatHut {
 
         //ここに設定項目を羅列
         public int[] m_ExecOrder { set; get; }
+        public bool m_ResizeHorizontalChecked { set; get; }
+        public bool m_ResizeVirticalChecked { set; get; }
         public int m_MarginAdjustPix { set; get; }
         public int m_TopAlignPix { set; get; }
         public int m_BottomAlignPix { set; get; }
@@ -28,6 +30,8 @@ namespace CatHut {
         //コンストラクタ（初期値指定を実装）
         public SettingContents() {
             m_ExecOrder = null;
+            m_ResizeHorizontalChecked = false;
+            m_ResizeVirticalChecked = false;
             m_MarginAdjustPix = 10;
             m_TopAlignPix = 10;
             m_BottomAlignPix = 10;

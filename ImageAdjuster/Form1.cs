@@ -45,6 +45,19 @@ namespace ImageAdjuster
             BOTTOM_ALIGN,
             LEFT_ALIGN,
             RIGHT_ALIGN,
+            RESIZE
+        }
+
+        enum EXEC_TYPE_SUB
+        {
+            NONE = 0,        //処理なし
+            MARGIN_ADJUST,
+            FLIP_HORIZONTAL,
+            FLIP_VIRTICAL,
+            TOP_ALIGN,
+            BOTTOM_ALIGN,
+            LEFT_ALIGN,
+            RIGHT_ALIGN,
             RESIZE_HORIZONTAL,
             RESIZE_VIRTICAL
         }
@@ -149,42 +162,42 @@ namespace ImageAdjuster
         private void InitializeMember()
         {
             //ToolTipのテキスト定義
-            m_CheckBoxTooltipTextArr = new string[Enum.GetNames(typeof(EXEC_TYPE)).Length];
-            m_CheckBoxTooltipTextArr[(int)EXEC_TYPE.MARGIN_ADJUST] = "上下左右の余白を指定のpix数に調整するよ";
-            m_CheckBoxTooltipTextArr[(int)EXEC_TYPE.FLIP_HORIZONTAL] = "画像を左右反転するよ";
-            m_CheckBoxTooltipTextArr[(int)EXEC_TYPE.FLIP_VIRTICAL] = "画像を上下反転するよ";
-            m_CheckBoxTooltipTextArr[(int)EXEC_TYPE.TOP_ALIGN] = "上の余白を指定のpix数に調整するよ";
-            m_CheckBoxTooltipTextArr[(int)EXEC_TYPE.BOTTOM_ALIGN] = "下の余白を指定のpix数に調整するよ";
-            m_CheckBoxTooltipTextArr[(int)EXEC_TYPE.LEFT_ALIGN] = "左の余白を指定のpix数に調整するよ";
-            m_CheckBoxTooltipTextArr[(int)EXEC_TYPE.RIGHT_ALIGN] = "右の余白を指定のpix数に調整するよ";
-            m_CheckBoxTooltipTextArr[(int)EXEC_TYPE.RESIZE_HORIZONTAL] = "縦横比を維持して指定の横幅になるよう拡縮するよ";
-            m_CheckBoxTooltipTextArr[(int)EXEC_TYPE.RESIZE_VIRTICAL] = "縦横比を維持して指定の高さになるよう拡縮するよ";
+            m_CheckBoxTooltipTextArr = new string[Enum.GetNames(typeof(EXEC_TYPE_SUB)).Length];
+            m_CheckBoxTooltipTextArr[(int)EXEC_TYPE_SUB.MARGIN_ADJUST] = "上下左右の余白を指定のpix数に調整するよ";
+            m_CheckBoxTooltipTextArr[(int)EXEC_TYPE_SUB.FLIP_HORIZONTAL] = "画像を左右反転するよ";
+            m_CheckBoxTooltipTextArr[(int)EXEC_TYPE_SUB.FLIP_VIRTICAL] = "画像を上下反転するよ";
+            m_CheckBoxTooltipTextArr[(int)EXEC_TYPE_SUB.TOP_ALIGN] = "上の余白を指定のpix数に調整するよ";
+            m_CheckBoxTooltipTextArr[(int)EXEC_TYPE_SUB.BOTTOM_ALIGN] = "下の余白を指定のpix数に調整するよ";
+            m_CheckBoxTooltipTextArr[(int)EXEC_TYPE_SUB.LEFT_ALIGN] = "左の余白を指定のpix数に調整するよ";
+            m_CheckBoxTooltipTextArr[(int)EXEC_TYPE_SUB.RIGHT_ALIGN] = "右の余白を指定のpix数に調整するよ";
+            m_CheckBoxTooltipTextArr[(int)EXEC_TYPE_SUB.RESIZE_HORIZONTAL] = "縦横比を維持して指定の横幅になるよう拡縮するよ";
+            m_CheckBoxTooltipTextArr[(int)EXEC_TYPE_SUB.RESIZE_VIRTICAL] = "縦横比を維持して指定の高さになるよう拡縮するよ";
 
-            m_TextBoxTooltipTextArr = new string[Enum.GetNames(typeof(EXEC_TYPE)).Length];
-            m_TextBoxTooltipTextArr[(int)EXEC_TYPE.MARGIN_ADJUST] = "上下左右の余白のpix数を指定してね";
-            m_TextBoxTooltipTextArr[(int)EXEC_TYPE.TOP_ALIGN] = "上の余白のpix数を指定してね";
-            m_TextBoxTooltipTextArr[(int)EXEC_TYPE.BOTTOM_ALIGN] = "下の余白のpix数を指定してね";
-            m_TextBoxTooltipTextArr[(int)EXEC_TYPE.LEFT_ALIGN] = "右の余白のpix数を指定してね";
-            m_TextBoxTooltipTextArr[(int)EXEC_TYPE.RIGHT_ALIGN] = "左の余白のpix数を指定してね";
-            m_TextBoxTooltipTextArr[(int)EXEC_TYPE.RESIZE_HORIZONTAL] = "拡縮後の横幅を指定してね";
-            m_TextBoxTooltipTextArr[(int)EXEC_TYPE.RESIZE_VIRTICAL] = "拡縮後の高さを指定してね";
+            m_TextBoxTooltipTextArr = new string[Enum.GetNames(typeof(EXEC_TYPE_SUB)).Length];
+            m_TextBoxTooltipTextArr[(int)EXEC_TYPE_SUB.MARGIN_ADJUST] = "上下左右の余白のpix数を指定してね";
+            m_TextBoxTooltipTextArr[(int)EXEC_TYPE_SUB.TOP_ALIGN] = "上の余白のpix数を指定してね";
+            m_TextBoxTooltipTextArr[(int)EXEC_TYPE_SUB.BOTTOM_ALIGN] = "下の余白のpix数を指定してね";
+            m_TextBoxTooltipTextArr[(int)EXEC_TYPE_SUB.LEFT_ALIGN] = "右の余白のpix数を指定してね";
+            m_TextBoxTooltipTextArr[(int)EXEC_TYPE_SUB.RIGHT_ALIGN] = "左の余白のpix数を指定してね";
+            m_TextBoxTooltipTextArr[(int)EXEC_TYPE_SUB.RESIZE_HORIZONTAL] = "拡縮後の横幅を指定してね";
+            m_TextBoxTooltipTextArr[(int)EXEC_TYPE_SUB.RESIZE_VIRTICAL] = "拡縮後の高さを指定してね";
 
 
 
             //チェックボックス定義
-            m_ExecCheckBoxArr = new CheckBox[Enum.GetNames(typeof(EXEC_TYPE)).Length];
-            m_ExecCheckBoxArr[(int)EXEC_TYPE.MARGIN_ADJUST] = checkBox_MarginAdjust;
-            m_ExecCheckBoxArr[(int)EXEC_TYPE.FLIP_HORIZONTAL] = checkBox_FlipHorizontal;
-            m_ExecCheckBoxArr[(int)EXEC_TYPE.FLIP_VIRTICAL] = checkBox_FlipVirtical;
-            m_ExecCheckBoxArr[(int)EXEC_TYPE.TOP_ALIGN] = checkBox_AlignTop;
-            m_ExecCheckBoxArr[(int)EXEC_TYPE.BOTTOM_ALIGN] = checkBox_AlignBottom;
-            m_ExecCheckBoxArr[(int)EXEC_TYPE.LEFT_ALIGN] = checkBox_AlignLeft;
-            m_ExecCheckBoxArr[(int)EXEC_TYPE.RIGHT_ALIGN] = checkBox_AlignRight;
-            m_ExecCheckBoxArr[(int)EXEC_TYPE.RESIZE_HORIZONTAL] = checkBox_ResizeHorizontal;
-            m_ExecCheckBoxArr[(int)EXEC_TYPE.RESIZE_VIRTICAL] = checkBox_ResizeVirtical;
+            m_ExecCheckBoxArr = new CheckBox[Enum.GetNames(typeof(EXEC_TYPE_SUB)).Length];
+            m_ExecCheckBoxArr[(int)EXEC_TYPE_SUB.MARGIN_ADJUST] = checkBox_MarginAdjust;
+            m_ExecCheckBoxArr[(int)EXEC_TYPE_SUB.FLIP_HORIZONTAL] = checkBox_FlipHorizontal;
+            m_ExecCheckBoxArr[(int)EXEC_TYPE_SUB.FLIP_VIRTICAL] = checkBox_FlipVirtical;
+            m_ExecCheckBoxArr[(int)EXEC_TYPE_SUB.TOP_ALIGN] = checkBox_AlignTop;
+            m_ExecCheckBoxArr[(int)EXEC_TYPE_SUB.BOTTOM_ALIGN] = checkBox_AlignBottom;
+            m_ExecCheckBoxArr[(int)EXEC_TYPE_SUB.LEFT_ALIGN] = checkBox_AlignLeft;
+            m_ExecCheckBoxArr[(int)EXEC_TYPE_SUB.RIGHT_ALIGN] = checkBox_AlignRight;
+            m_ExecCheckBoxArr[(int)EXEC_TYPE_SUB.RESIZE_HORIZONTAL] = checkBox_ResizeHorizontal;
+            m_ExecCheckBoxArr[(int)EXEC_TYPE_SUB.RESIZE_VIRTICAL] = checkBox_ResizeVirtical;
 
             //チェックボックスにToolTip設定
-            m_CheckBoxTooltipArr = new ToolTip[Enum.GetNames(typeof(EXEC_TYPE)).Length];
+            m_CheckBoxTooltipArr = new ToolTip[Enum.GetNames(typeof(EXEC_TYPE_SUB)).Length];
             for (int i = 0; i < m_CheckBoxTooltipArr.Length; i++)
             {
                 m_CheckBoxTooltipArr[i] = CreateToolTip();
@@ -204,19 +217,18 @@ namespace ImageAdjuster
             m_ExecOrderLabelArr[(int)EXEC_TYPE.BOTTOM_ALIGN] = label_AlignBottomOrder;
             m_ExecOrderLabelArr[(int)EXEC_TYPE.LEFT_ALIGN] = label_AlignLeftOrder;
             m_ExecOrderLabelArr[(int)EXEC_TYPE.RIGHT_ALIGN] = label_AlignRightOrder;
-            m_ExecOrderLabelArr[(int)EXEC_TYPE.RESIZE_HORIZONTAL] = label_ResizeHorizontal;
-            m_ExecOrderLabelArr[(int)EXEC_TYPE.RESIZE_VIRTICAL] = label_ResizeVirtical;
+            m_ExecOrderLabelArr[(int)EXEC_TYPE.RESIZE] = label_Resize;
 
-            m_ParamTextBoxArr = new TextBox[Enum.GetNames(typeof(EXEC_TYPE)).Length];
-            m_ParamTextBoxArr[(int)EXEC_TYPE.MARGIN_ADJUST] = textBox_MarginAdjust;
-            m_ParamTextBoxArr[(int)EXEC_TYPE.TOP_ALIGN] = textBox_AlignTop;
-            m_ParamTextBoxArr[(int)EXEC_TYPE.BOTTOM_ALIGN] = textBox_AlignBottom;
-            m_ParamTextBoxArr[(int)EXEC_TYPE.LEFT_ALIGN] = textBox_AlignLeft;
-            m_ParamTextBoxArr[(int)EXEC_TYPE.RIGHT_ALIGN] = textBox_AlignRight;
-            m_ParamTextBoxArr[(int)EXEC_TYPE.RESIZE_HORIZONTAL] = textBox_ResizeHorizontal;
-            m_ParamTextBoxArr[(int)EXEC_TYPE.RESIZE_VIRTICAL] = textBox_ResizeVirtical;
+            m_ParamTextBoxArr = new TextBox[Enum.GetNames(typeof(EXEC_TYPE_SUB)).Length];
+            m_ParamTextBoxArr[(int)EXEC_TYPE_SUB.MARGIN_ADJUST] = textBox_MarginAdjust;
+            m_ParamTextBoxArr[(int)EXEC_TYPE_SUB.TOP_ALIGN] = textBox_AlignTop;
+            m_ParamTextBoxArr[(int)EXEC_TYPE_SUB.BOTTOM_ALIGN] = textBox_AlignBottom;
+            m_ParamTextBoxArr[(int)EXEC_TYPE_SUB.LEFT_ALIGN] = textBox_AlignLeft;
+            m_ParamTextBoxArr[(int)EXEC_TYPE_SUB.RIGHT_ALIGN] = textBox_AlignRight;
+            m_ParamTextBoxArr[(int)EXEC_TYPE_SUB.RESIZE_HORIZONTAL] = textBox_ResizeHorizontal;
+            m_ParamTextBoxArr[(int)EXEC_TYPE_SUB.RESIZE_VIRTICAL] = textBox_ResizeVirtical;
 
-            m_TextBoxTooltipArr = new ToolTip[Enum.GetNames(typeof(EXEC_TYPE)).Length];
+            m_TextBoxTooltipArr = new ToolTip[Enum.GetNames(typeof(EXEC_TYPE_SUB)).Length];
             for (int i = 0; i < m_TextBoxTooltipArr.Length; i++)
             {
                 m_TextBoxTooltipArr[i] = CreateToolTip();
@@ -271,6 +283,9 @@ namespace ImageAdjuster
             m_APS.Settings.m_ResizeVirticalPix = int.Parse(textBox_ResizeVirtical.Text);
 
             m_APS.Settings.m_ThuresholdAlpha = int.Parse(textBox_ThuresholdAlpha.Text);
+
+            m_APS.Settings.m_ResizeHorizontalChecked = checkBox_ResizeHorizontal.Checked;
+            m_APS.Settings.m_ResizeVirticalChecked = checkBox_ResizeVirtical.Checked;
 
             m_APS.SaveData();
 
@@ -404,7 +419,7 @@ namespace ImageAdjuster
         {
             if (m_EventEnable == false) { return; }
 
-            var input = ValueLimit(textBox_AlignBottom.Text, 0, 1000);
+            var input = ValueLimit(textBox_AlignBottom.Text, 0, 3840);
             textBox_AlignBottom.Text = input.ToString();
             SaveSetting();
             UpdatePictureBox();
@@ -1039,14 +1054,20 @@ namespace ImageAdjuster
                         break;
 
 
-                    case EXEC_TYPE.RESIZE_HORIZONTAL:
+                    case EXEC_TYPE.RESIZE:
+                        
+                        if(m_APS.Settings.m_ResizeVirticalChecked && m_APS.Settings.m_ResizeHorizontalChecked)
+                        {
+                            var pixW = m_APS.Settings.m_ResizeHorizontalPix;
+                            var pixH = m_APS.Settings.m_ResizeVirticalPix;
+                            img = Resize(img, pixW, pixH);
+                        }
+                        else if(m_APS.Settings.m_ResizeHorizontalChecked)
                         {
                             var pix = m_APS.Settings.m_ResizeHorizontalPix;
                             img = ResizeHorizontal(img, pix);
                         }
-                        break;
-
-                    case EXEC_TYPE.RESIZE_VIRTICAL:
+                        else if (m_APS.Settings.m_ResizeVirticalChecked)
                         {
                             var pix = m_APS.Settings.m_ResizeVirticalPix;
                             img = ResizeVertical(img, pix);
@@ -1085,69 +1106,70 @@ namespace ImageAdjuster
         private void checkBox_AlignBottom_CheckedChanged(object sender, EventArgs e)
         {
             if (m_EventEnable == false) { return; }
-            CheckBoxCheckedChanged(EXEC_TYPE.BOTTOM_ALIGN);
+            CheckBoxCheckedChanged(EXEC_TYPE_SUB.BOTTOM_ALIGN);
             UpdatePictureBox();
         }
 
         private void checkBox_MarginAdjust_CheckedChanged(object sender, EventArgs e)
         {
             if (m_EventEnable == false) { return; }
-            CheckBoxCheckedChanged(EXEC_TYPE.MARGIN_ADJUST);
+            CheckBoxCheckedChanged(EXEC_TYPE_SUB.MARGIN_ADJUST);
             UpdatePictureBox();
         }
 
         private void checkBox_FlipVirtical_CheckedChanged(object sender, EventArgs e)
         {
             if (m_EventEnable == false) { return; }
-            CheckBoxCheckedChanged(EXEC_TYPE.FLIP_VIRTICAL);
+            CheckBoxCheckedChanged(EXEC_TYPE_SUB.FLIP_VIRTICAL);
             UpdatePictureBox();
         }
 
         private void checkBox_FlipHorizontal_CheckedChanged(object sender, EventArgs e)
         {
             if (m_EventEnable == false) { return; }
-            CheckBoxCheckedChanged(EXEC_TYPE.FLIP_HORIZONTAL);
+            CheckBoxCheckedChanged(EXEC_TYPE_SUB.FLIP_HORIZONTAL);
             UpdatePictureBox();
         }
 
-        private void CheckBoxCheckedChanged(EXEC_TYPE et)
+        private void CheckBoxCheckedChanged(EXEC_TYPE_SUB ets)
         {
             var preValue = int.MaxValue;
-            if (m_ExecCheckBoxArr[(int)et].Checked)
-            {
-                m_ExecOrder[(int)et] = GetOrder();
-            }
-            else
-            {
-                preValue = m_ExecOrder[(int)et];
-                m_ExecOrder[(int)et] = -1;
-            }
 
-            //中間の値が消されたら前詰めする。
-            for(int i = 0; i < m_ExecOrder.Length; i++)
+            var et = ConvertExecType(ets);
+
+            bool isChecked = m_ExecCheckBoxArr[(int)ets].Checked;
+            bool isHorizontalChecked = checkBox_ResizeHorizontal.Checked;
+            bool isVerticalChecked = checkBox_ResizeVirtical.Checked;
+
+            if (et == EXEC_TYPE.RESIZE)
             {
-                if (m_ExecOrder[i] > preValue)
+                if (isChecked)
                 {
-                    m_ExecOrder[i]--;
+                    if (isHorizontalChecked ^ isVerticalChecked)
+                    {
+                        m_ExecOrder[(int)et] = GetOrder();
+                    }
+                }
+                else
+                {
+                    if (!isHorizontalChecked && !isVerticalChecked)
+                    {
+                        preValue = m_ExecOrder[(int)et];
+                        m_ExecOrder[(int)et] = -1;
+                    }
                 }
             }
-
-            UpdateUI();
-            m_APS.Settings.m_ExecOrder = m_ExecOrder;
-            m_APS.SaveData();
-        }
-
-        private void ExecOrderUpdate(EXEC_TYPE et)
-        {
-            var preValue = int.MaxValue;
-            if (m_ExecCheckBoxArr[(int)et].Checked)
-            {
-                m_ExecOrder[(int)et] = GetOrder();
-            }
             else
             {
-                preValue = m_ExecOrder[(int)et];
-                m_ExecOrder[(int)et] = -1;
+                if (isChecked)
+                {
+                    m_ExecOrder[(int)et] = GetOrder();
+                }
+                else
+                {
+                    preValue = m_ExecOrder[(int)et];
+                    m_ExecOrder[(int)et] = -1;
+                }
             }
 
             //中間の値が消されたら前詰めする。
@@ -1158,7 +1180,63 @@ namespace ImageAdjuster
                     m_ExecOrder[i]--;
                 }
             }
+
+            m_APS.Settings.m_ExecOrder = m_ExecOrder;
+            m_APS.Settings.m_ResizeHorizontalChecked = checkBox_ResizeHorizontal.Checked;
+            m_APS.Settings.m_ResizeVirticalChecked = checkBox_ResizeVirtical.Checked;
+            m_APS.SaveData();
+
+            UpdateUI();
+
         }
+
+        private EXEC_TYPE ConvertExecType(EXEC_TYPE_SUB ets)
+        {
+            EXEC_TYPE tempEt;
+
+            if (ets == EXEC_TYPE_SUB.RESIZE_HORIZONTAL || ets == EXEC_TYPE_SUB.RESIZE_VIRTICAL)
+            {
+                tempEt = EXEC_TYPE.RESIZE;
+            }
+            else
+            {
+                tempEt = (EXEC_TYPE)ets;
+            }
+
+            return tempEt;
+        }
+
+
+        //★
+        //private void ExecOrderUpdate(EXEC_TYPE_SUB et)
+        //{
+        //    var preValue = int.MaxValue;
+        //    if (m_ExecCheckBoxArr[(int)et].Checked)
+        //    {
+        //        if (et == EXEC_TYPE.RESIZE && (checkBox_ResizeHorizontal.Checked || checkBox_ResizeVirtical.Checked))
+        //        {
+        //            //何もしない
+        //        }
+        //        else
+        //        {
+        //            m_ExecOrder[(int)et] = GetOrder();
+        //        }
+        //    }
+        //    else
+        //    {
+        //        preValue = m_ExecOrder[(int)et];
+        //        m_ExecOrder[(int)et] = -1;
+        //    }
+
+        //    //中間の値が消されたら前詰めする。
+        //    for (int i = 0; i < m_ExecOrder.Length; i++)
+        //    {
+        //        if (m_ExecOrder[i] > preValue)
+        //        {
+        //            m_ExecOrder[i]--;
+        //        }
+        //    }
+        //}
 
 
 
@@ -1210,9 +1288,11 @@ namespace ImageAdjuster
         //    m_APS.SaveData();
         //}
 
+        //★
         private int GetOrder()
         {
             var ret = 0;
+
             foreach (var item in m_ExecOrder)
             { 
                 if(item != -1) { ret++; }
@@ -1220,6 +1300,7 @@ namespace ImageAdjuster
             return ret;
         }
 
+        //★
         private void UpdateUI()
         {
             m_EventEnable = false;
@@ -1238,7 +1319,24 @@ namespace ImageAdjuster
                 //チェックボックス更新
                 if (m_ExecCheckBoxArr[i] == null) { continue; }
 
-                m_ExecCheckBoxArr[i].Checked = !(m_ExecOrder[i] == -1);
+
+                if(i == (int)EXEC_TYPE.RESIZE) {
+
+                    if (m_ExecOrder[i] == -1)
+                    {
+                        m_ExecCheckBoxArr[(int)EXEC_TYPE_SUB.RESIZE_VIRTICAL].Checked = false;
+                        m_ExecCheckBoxArr[(int)EXEC_TYPE_SUB.RESIZE_HORIZONTAL].Checked = false;
+                    }
+                    else
+                    {
+                        m_ExecCheckBoxArr[(int)EXEC_TYPE_SUB.RESIZE_VIRTICAL].Checked = m_APS.Settings.m_ResizeVirticalChecked;
+                        m_ExecCheckBoxArr[(int)EXEC_TYPE_SUB.RESIZE_HORIZONTAL].Checked = m_APS.Settings.m_ResizeHorizontalChecked;
+                    }
+                }
+                else
+                {
+                    m_ExecCheckBoxArr[i].Checked = !(m_ExecOrder[i] == -1);
+                }
 
             }
 
@@ -1522,6 +1620,23 @@ namespace ImageAdjuster
         }
 
 
+        private Image Resize(Image img, int width, int height)
+        {
+            if (width < 1 || height < 1)
+            {
+                return CreateErrorImage();
+            }
+
+            Bitmap canvas = new Bitmap(width, height);
+            using (Graphics g = Graphics.FromImage(canvas))
+            {
+                g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                g.DrawImage(img, 0, 0, width, height);
+            }
+            return canvas;
+        }
+
+
 
         private Image RemoveBottomMargin(Bitmap img, int alpha)
         {
@@ -1733,7 +1848,7 @@ namespace ImageAdjuster
         {
             if (m_EventEnable == false) { return; }
 
-            var input = ValueLimit(textBox_MarginAdjust.Text, 0, 1000);
+            var input = ValueLimit(textBox_MarginAdjust.Text, 0, 3840);
             textBox_MarginAdjust.Text = input.ToString();
             SaveSetting();
             UpdatePictureBox();
@@ -1743,7 +1858,7 @@ namespace ImageAdjuster
         {
             if (m_EventEnable == false) { return; }
 
-            var input = ValueLimit(textBox_AlignTop.Text, 0, 1000);
+            var input = ValueLimit(textBox_AlignTop.Text, 0, 3840);
             textBox_AlignTop.Text = input.ToString();
             SaveSetting();
             UpdatePictureBox();
@@ -1754,7 +1869,7 @@ namespace ImageAdjuster
         {
             if (m_EventEnable == false) { return; }
 
-            var input = ValueLimit(textBox_AlignLeft.Text, 0, 1000);
+            var input = ValueLimit(textBox_AlignLeft.Text, 0, 3840);
             textBox_AlignLeft.Text = input.ToString();
             SaveSetting();
             UpdatePictureBox();
@@ -1765,7 +1880,7 @@ namespace ImageAdjuster
         {
             if (m_EventEnable == false) { return; }
 
-            var input = ValueLimit(textBox_AlignRight.Text, 0, 1000);
+            var input = ValueLimit(textBox_AlignRight.Text, 0, 3840);
             textBox_AlignRight.Text = input.ToString();
             SaveSetting();
             UpdatePictureBox();
@@ -1793,14 +1908,14 @@ namespace ImageAdjuster
         private void checkBox_AlignTop_CheckedChanged(object sender, EventArgs e)
         {
             if (m_EventEnable == false) { return; }
-            CheckBoxCheckedChanged(EXEC_TYPE.TOP_ALIGN);
+            CheckBoxCheckedChanged(EXEC_TYPE_SUB.TOP_ALIGN);
             UpdatePictureBox();
         }
 
         private void checkBox_AlignLeft_CheckedChanged(object sender, EventArgs e)
         {
             if (m_EventEnable == false) { return; }
-            CheckBoxCheckedChanged(EXEC_TYPE.LEFT_ALIGN);
+            CheckBoxCheckedChanged(EXEC_TYPE_SUB.LEFT_ALIGN);
             UpdatePictureBox();
 
         }
@@ -1808,7 +1923,7 @@ namespace ImageAdjuster
         private void checkBox_AlignRight_CheckedChanged(object sender, EventArgs e)
         {
             if (m_EventEnable == false) { return; }
-            CheckBoxCheckedChanged(EXEC_TYPE.RIGHT_ALIGN);
+            CheckBoxCheckedChanged(EXEC_TYPE_SUB.RIGHT_ALIGN);
             UpdatePictureBox();
         }
 
@@ -1913,7 +2028,7 @@ namespace ImageAdjuster
         {
             if (m_EventEnable == false) { return; }
 
-            var input = ValueLimit(textBox_ResizeHorizontal.Text, 0, 1000);
+            var input = ValueLimit(textBox_ResizeHorizontal.Text, 0, 3840);
             textBox_ResizeHorizontal.Text = input.ToString();
             SaveSetting();
             UpdatePictureBox();
@@ -1924,7 +2039,7 @@ namespace ImageAdjuster
         {
             if (m_EventEnable == false) { return; }
 
-            var input = ValueLimit(textBox_ResizeVirtical.Text, 0, 1000);
+            var input = ValueLimit(textBox_ResizeVirtical.Text, 0, 3840);
             textBox_ResizeVirtical.Text = input.ToString();
             SaveSetting();
             UpdatePictureBox();
@@ -1935,18 +2050,7 @@ namespace ImageAdjuster
         {
             if (m_EventEnable == false) { return; }
 
-            {
-                m_EventEnable = false;
-                //縦指定がチェックされていたら外す
-                if (checkBox_ResizeVirtical.Checked == true)
-                {
-                    checkBox_ResizeVirtical.Checked = false;
-                    ExecOrderUpdate(EXEC_TYPE.RESIZE_VIRTICAL);
-                }
-                m_EventEnable = true;
-            }
-
-            CheckBoxCheckedChanged(EXEC_TYPE.RESIZE_HORIZONTAL);
+            CheckBoxCheckedChanged(EXEC_TYPE_SUB.RESIZE_HORIZONTAL);
             UpdatePictureBox();
         }
 
@@ -1954,18 +2058,7 @@ namespace ImageAdjuster
         {
             if (m_EventEnable == false) { return; }
 
-            {
-                m_EventEnable = false;
-                //横指定がチェックされていたら外す
-                if (checkBox_ResizeHorizontal.Checked == true)
-                {
-                    checkBox_ResizeHorizontal.Checked = false;
-                    ExecOrderUpdate(EXEC_TYPE.RESIZE_HORIZONTAL);
-                }
-                m_EventEnable = true;
-            }
-
-            CheckBoxCheckedChanged(EXEC_TYPE.RESIZE_VIRTICAL);
+            CheckBoxCheckedChanged(EXEC_TYPE_SUB.RESIZE_VIRTICAL);
             UpdatePictureBox();
         }
 
