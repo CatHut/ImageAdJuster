@@ -170,8 +170,8 @@ namespace ImageAdjuster
             m_CheckBoxTooltipTextArr[(int)EXEC_TYPE_SUB.BOTTOM_ALIGN] = "下の余白を指定のpix数に調整するよ";
             m_CheckBoxTooltipTextArr[(int)EXEC_TYPE_SUB.LEFT_ALIGN] = "左の余白を指定のpix数に調整するよ";
             m_CheckBoxTooltipTextArr[(int)EXEC_TYPE_SUB.RIGHT_ALIGN] = "右の余白を指定のpix数に調整するよ";
-            m_CheckBoxTooltipTextArr[(int)EXEC_TYPE_SUB.RESIZE_HORIZONTAL] = "縦横比を維持して指定の横幅になるよう拡縮するよ";
-            m_CheckBoxTooltipTextArr[(int)EXEC_TYPE_SUB.RESIZE_VIRTICAL] = "縦横比を維持して指定の高さになるよう拡縮するよ";
+            m_CheckBoxTooltipTextArr[(int)EXEC_TYPE_SUB.RESIZE_HORIZONTAL] = "指定の横幅になるよう拡縮するよ" + Environment.NewLine + "縦横両方にチェックを入れると縦横比は維持されないから気をつけてね";
+            m_CheckBoxTooltipTextArr[(int)EXEC_TYPE_SUB.RESIZE_VIRTICAL] = "指定の高さになるよう拡縮するよ" + Environment.NewLine + "縦横両方にチェックを入れると縦横比は維持されないから気をつけてね";
 
             m_TextBoxTooltipTextArr = new string[Enum.GetNames(typeof(EXEC_TYPE_SUB)).Length];
             m_TextBoxTooltipTextArr[(int)EXEC_TYPE_SUB.MARGIN_ADJUST] = "上下左右の余白のpix数を指定してね";
